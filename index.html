@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ثانوي قريش | نظام الصيانة</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--n:#17324d;--b:#2e6f9e;--g:#1f7a5a;--r:#a94b4b;--bg:#f5f7fa}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:#233444}
+header{background:linear-gradient(135deg,var(--n),#28567d);color:#fff;padding:25px;text-align:center}
+.wrap{max-width:1150px;margin:auto;padding:18px}.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 8px 25px #17324d12}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #ccd6df;border-radius:10px;font:inherit}textarea{min-height:90px}
+label{display:block;font-weight:bold;margin:7px 0}button{border:0;border-radius:10px;padding:11px 16px;font-weight:bold;cursor:pointer}
+.primary{background:var(--g);color:#fff}.blue{background:var(--b);color:#fff}.danger{background:var(--r);color:#fff}.light{background:#eaf0f6;color:var(--n)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tab{background:#fff;color:var(--n)}.tab.on{background:var(--n);color:#fff}
+.hide{display:none}table{width:100%;border-collapse:collapse;min-width:950px}th,td{padding:9px;border-bottom:1px solid #e7edf2;text-align:center}th{background:var(--n);color:#fff}
+.scroll{overflow:auto}.kpi b{font-size:28px;display:block;margin-top:8px}.muted{color:#6b7a89}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<header><h1>ثانوي قريش</h1><div>نظام الصيانة والمتابعة الإلكترونية</div></header>
+<div class="wrap">
+<section id="auth" class="card" style="max-width:520px;margin:25px auto">
+<h2>تسجيل الدخول</h2>
+<p class="muted">الحساب المعتمد: abu9hala99@gmail.com</p>
+<label>البريد الإلكتروني</label><input id="email" type="email" value="abu9hala99@gmail.com">
+<label>كلمة المرور</label><input id="password" type="password" placeholder="كلمة المرور">
+<div class="actions">
+<button class="primary" onclick="signIn()">دخول</button>
+<button class="blue" onclick="signUp()">إنشاء/تفعيل الحساب</button>
+</div><p id="authMsg" class="muted"></p>
+</section>
+
+<section id="app" class="hide">
+<div class="card"><b id="who"></b><button class="light" style="float:left" onclick="signOut()">خروج</button></div>
+<div class="tabs">
+<button class="tab on" onclick="tab('dash',this)">لوحة المؤشرات</button>
+<button class="tab" onclick="tab('form',this)">بلاغ جديد</button>
+<button class="tab" onclick="tab('log',this)">سجل الصيانة</button>
+<button class="tab" onclick="tab('team',this)">فريق العمل</button>
+</div>
+
+<div id="dash" class="page">
+<div class="grid">
+<div class="card kpi">إجمالي البلاغات<b id="all">0</b></div>
+<div class="card kpi">جديدة<b id="new">0</b></div>
+<div class="card kpi">قيد التنفيذ<b id="doing">0</b></div>
+<div class="card kpi">مكتملة<b id="done">0</b></div>
+<div class="card kpi">مؤجلة<b id="hold">0</b></div>
+</div></div>
+
+<div id="form" class="page hide"><div class="card"><h2>تسجيل بلاغ صيانة</h2><div class="grid">
+<div><label>التاريخ</label><input id="d" type="date"></div>
+<div><label>مقدم البلاغ</label><input id="reporter" value="محمد الثقفي"></div>
+<div><label>الموقع</label><select id="loc"><option>الفصول</option><option>المعامل</option><option>المكاتب</option><option>المرافق</option><option>الساحات</option><option>دورات المياه</option><option>أخرى</option></select></div>
+<div><label>نوع البلاغ</label><select id="typ"><option>صيانة كهرباء</option><option>صيانة تكييف</option><option>صيانة أجهزة</option><option>أثاث وتجهيزات</option><option>شبكات وتقنية</option><option>سباكة</option><option>أخرى</option></select></div>
+<div><label>الأولوية</label><select id="pri"><option>متوسط</option><option>عاجل</option><option>عالي</option><option>منخفض</option></select></div>
+<div><label>الحالة</label><select id="sta"><option>جديد</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option></select></div>
+<div><label>المسؤول</label><input id="owner" value="محمد الثقفي"></div>
+<div><label>تاريخ الإنجاز</label><input id="finish" type="date"></div>
+<div style="grid-column:1/-1"><label>وصف المشكلة</label><textarea id="desc"></textarea></div>
+<div style="grid-column:1/-1"><label>ملاحظات</label><textarea id="notes"></textarea></div>
+</div><button class="primary" onclick="saveReport()">حفظ البلاغ</button><p id="saveMsg"></p></div></div>
+
+<div id="log" class="page hide"><div class="card"><h2>سجل الصيانة</h2><div class="scroll"><table>
+<thead><tr><th>#</th><th>التاريخ</th><th>المبلغ</th><th>الموقع</th><th>النوع</th><th>الوصف</th><th>الأولوية</th><th>الحالة</th><th>المسؤول</th><th>الإنجاز</th><th>ملاحظات</th><th>حذف</th></tr></thead>
+<tbody id="rows"></tbody></table></div></div></div>
+
+<div id="team" class="page hide"><div class="card"><h2>فريق الإشراف والمتابعة</h2>
+<div class="grid"><div class="card"><b>منسق الصيانة</b><p>محمد الثقفي</p></div><div class="card"><b>وكيل الشؤون المدرسية</b><p>خليل أبو جرة</p></div><div class="card"><b>مدير المدرسة</b><p>محمد الثبيتي</p></div></div>
+</div></div>
+</section></div>
+
+<script>
+const sb = supabase.createClient("https://jpfkkqifkzuphpwlloba.supabase.co","sb_publishable_zueCU9xcD3MqYaYqVyp8aA_wQqHrUPj");
+const allowed="abu9hala99@gmail.com".toLowerCase();
+d.value=new Date().toISOString().slice(0,10);
+
+async function signUp(){
+ const email=document.getElementById('email').value.trim().toLowerCase(), password=document.getElementById('password').value;
+ if(email!==allowed) return msg("هذا البريد غير معتمد.");
+ if(password.length<6) return msg("اختر كلمة مرور من 6 أحرف على الأقل.");
+ const {error}=await sb.auth.signUp({email,password});
+ msg(error?error.message:"تم إرسال رسالة تأكيد إلى البريد إن كان تأكيد البريد مفعّلًا. بعد التأكيد سجّل الدخول.");
+}
+async function signIn(){
+ const email=document.getElementById('email').value.trim().toLowerCase(), password=document.getElementById('password').value;
+ if(email!==allowed) return msg("هذا البريد غير معتمد.");
+ const {error}=await sb.auth.signInWithPassword({email,password});
+ if(error) return msg("تعذر الدخول: "+error.message);
+ await showApp();
+}
+async function signOut(){await sb.auth.signOut(); location.reload()}
+function msg(x){authMsg.textContent=x}
+async function showApp(){
+ const {data:{user}}=await sb.auth.getUser();
+ if(!user) return;
+ if((user.email||"").toLowerCase()!==allowed){await sb.auth.signOut();return msg("الحساب غير مصرح.");}
+ auth.classList.add("hide"); app.classList.remove("hide"); who.textContent="محمد الثقفي — منسق الصيانة"; await load();
+}
+function tab(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.add('hide'));document.getElementById(id).classList.remove('hide');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+async function saveReport(){
+ const rec={report_date:d.value,reporter:reporter.value.trim(),location:loc.value,report_type:typ.value,description:desc.value.trim(),priority:pri.value,status:sta.value,owner:owner.value.trim(),completion_date:finish.value||null,notes:notes.value.trim()};
+ if(!rec.report_date||!rec.reporter||!rec.description) return saveMsg.textContent="أكمل التاريخ ومقدم البلاغ ووصف المشكلة.";
+ const {error}=await sb.from("maintenance_reports").insert(rec);
+ saveMsg.textContent=error?("خطأ: "+error.message):"تم حفظ البلاغ بنجاح.";
+ if(!error){desc.value="";notes.value="";finish.value="";await load();}
+}
+async function load(){
+ const {data,error}=await sb.from("maintenance_reports").select("*").order("created_at",{ascending:false});
+ if(error){rows.innerHTML='<tr><td colspan=12>'+error.message+'</td></tr>';return}
+ all.textContent=data.length; new.textContent=data.filter(x=>x.status==="جديد").length; doing.textContent=data.filter(x=>x.status==="قيد التنفيذ").length; done.textContent=data.filter(x=>x.status==="مكتمل").length; hold.textContent=data.filter(x=>x.status==="مؤجل").length;
+ rows.innerHTML=data.map((r,i)=>`<tr><td>${r.id}</td><td>${r.report_date||""}</td><td>${r.reporter||""}</td><td>${r.location||""}</td><td>${r.report_type||""}</td><td>${r.description||""}</td><td>${r.priority||""}</td><td>${r.status||""}</td><td>${r.owner||""}</td><td>${r.completion_date||""}</td><td>${r.notes||""}</td><td><button class="danger" onclick="del(${r.id})">حذف</button></td></tr>`).join("");
+}
+async function del(id){if(!confirm("حذف البلاغ؟"))return;const {error}=await sb.from("maintenance_reports").delete().eq("id",id);if(error)alert(error.message);else await load()}
+sb.auth.getSession().then(({data})=>{if(data.session)showApp()});
+</script></body></html>
