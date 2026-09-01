@@ -29,6 +29,7 @@ label{display:block;font-weight:bold;margin:7px 0}button{border:0;border-radius:
 <div class="actions">
 <button class="primary" onclick="signIn()">دخول</button>
 <button class="blue" onclick="signUp()">إنشاء/تفعيل الحساب</button>
+ <button type="button" class="light" onclick="resetPassword()">نسيت كلمة المرور؟</button>
 </div><p id="authMsg" class="muted"></p>
 </section>
 
@@ -90,6 +91,20 @@ async function signIn(){
  const {error}=await sb.auth.signInWithPassword({email,password});
  if(error) return msg("تعذر الدخول: "+error.message);
  await showApp();
+}
+async function resetPassword(){
+  const email=document.getElementById('email').value.trim().toLowerCase();
+
+  if(!email) return msg("أدخل البريد الإلكتروني أولًا");
+  if(email!==allowed) return msg("البريد الإلكتروني غير معتمد");
+
+  const {error}=await sb.auth.resetPasswordForEmail(email,{
+    redirectTo: window.location.origin
+  });
+
+  if(error) return msg("تعذر إرسال رابط الاستعادة: "+error.message);
+
+  msg("تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني");
 }
 async function signOut(){await sb.auth.signOut(); location.reload()}
 function msg(x){authMsg.textContent=x}
