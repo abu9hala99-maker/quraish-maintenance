@@ -1,133 +1,1703 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ثانوي قريش | نظام الصيانة</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>السجل الإلكتروني - قريش الثانوية</title>
 <style>
-:root{--n:#17324d;--b:#2e6f9e;--g:#1f7a5a;--r:#a94b4b;--bg:#f5f7fa}
-*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:var(--bg);color:#233444}
-header{background:linear-gradient(135deg,var(--n),#28567d);color:#fff;padding:25px;text-align:center}
-.wrap{max-width:1150px;margin:auto;padding:18px}.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 8px 25px #17324d12}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
-input,select,textarea{width:100%;padding:11px;border:1px solid #ccd6df;border-radius:10px;font:inherit}textarea{min-height:90px}
-label{display:block;font-weight:bold;margin:7px 0}button{border:0;border-radius:10px;padding:11px 16px;font-weight:bold;cursor:pointer}
-.primary{background:var(--g);color:#fff}.blue{background:var(--b);color:#fff}.danger{background:var(--r);color:#fff}.light{background:#eaf0f6;color:var(--n)}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tab{background:#fff;color:var(--n)}.tab.on{background:var(--n);color:#fff}
-.hide{display:none}table{width:100%;border-collapse:collapse;min-width:950px}th,td{padding:9px;border-bottom:1px solid #e7edf2;text-align:center}th{background:var(--n);color:#fff}
-.scroll{overflow:auto}.kpi b{font-size:28px;display:block;margin-top:8px}.muted{color:#6b7a89}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+:root{
+  --p:#0d5c63;--p2:#1f7a6f;--gold:#d8a32f;--bg:#f5f8fa;--ink:#17323a;
+  --muted:#6e7e85;--line:#e5ecef;--good:#1d8a56;--warn:#c58c13;--bad:#b94b4b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{min-height:100vh}
+header{
+  background:linear-gradient(135deg,var(--p),var(--p2));
+  color:#fff;padding:15px 18px;display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:10;box-shadow:0 5px 18px #0002
+}
+header img{width:66px;height:66px;border-radius:16px;background:#fff;object-fit:contain;padding:5px}
+header .title h1{margin:0;font-size:22px}
+header .title div{opacity:.92;margin-top:4px}
+header .grow{flex:1}
+header button{border:0;border-radius:11px;padding:10px 13px;background:#ffffff18;color:#fff}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 96px)}
+aside{background:#fff;border-left:1px solid var(--line);padding:14px;position:sticky;top:96px;height:calc(100vh - 96px)}
+.navbtn{display:block;width:100%;border:0;background:transparent;padding:12px 10px;text-align:right;border-radius:12px;margin:4px 0;color:var(--ink)}
+.navbtn.active,.navbtn:hover{background:#eaf4f3;color:var(--p);font-weight:700}
+main{padding:18px;max-width:1400px;width:100%;margin:auto}
+.topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+select,input,textarea{border:1px solid #d8e1e5;border-radius:11px;padding:10px;background:#fff}
+.btn{border:0;border-radius:11px;padding:10px 13px;background:var(--p);color:#fff}
+.btn.alt{background:#6d7a80}.btn.gold{background:var(--gold)}.btn.bad{background:var(--bad)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.card,.panel{background:#fff;border:1px solid #edf1f3;border-radius:18px;box-shadow:0 4px 18px #0000000b}
+.card{padding:15px}.card span{color:var(--muted)}.card b{display:block;font-size:29px;margin-top:7px;color:var(--p)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.panel{padding:16px}
+.panel h3{margin:0 0 12px}.muted{color:var(--muted)}
+.tablewrap{overflow:auto;border-radius:12px;border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;min-width:760px;background:#fff}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+th{background:#f8fafb;position:sticky;top:0}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px}
+.badge.good{background:#e9f7ef;color:var(--good)}.badge.warn{background:#fff6df;color:var(--warn)}.badge.bad{background:#fdecec;color:var(--bad)}
+.bar{height:12px;background:#edf2f4;border-radius:999px;overflow:hidden}.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--p2),var(--p));border-radius:999px}
+.chartrow{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;margin:9px 0}
+.classchips{display:flex;gap:8px;flex-wrap:wrap}.chip{padding:8px 10px;background:#eef6f4;border-radius:11px}
+.notice{background:#fff8df;border-right:5px solid var(--gold);padding:12px;border-radius:12px}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal.show{display:flex}.modal .box{background:#fff;width:min(620px,100%);max-height:90vh;overflow:auto;border-radius:18px;padding:18px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid .full{grid-column:1/-1}
+.section{display:none}.section.active{display:block}
+.att-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.login{
+ position:fixed;inset:0;background:linear-gradient(145deg,#0d5c63,#1f7a6f);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100
+}
+.loginbox{width:min(420px,100%);background:#fff;border-radius:22px;padding:22px;text-align:center}
+.loginbox img{width:100px;height:100px;object-fit:contain;margin-bottom:10px}
+.loginbox input{width:100%;margin:7px 0}
+.kpi-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.kpi{background:#f8fafb;border:1px solid var(--line);border-radius:12px;padding:10px}
+.profile-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.small{font-size:12px}
+@media(max-width:900px){.shell{grid-template-columns:1fr}aside{position:static;height:auto;display:flex;overflow:auto;border-left:0;border-bottom:1px solid var(--line)}.navbtn{white-space:nowrap;width:auto}.cards{grid-template-columns:1fr 1fr}.grid2,.att-grid{grid-template-columns:1fr}}
+@media(max-width:560px){header .title h1{font-size:18px}.cards,.formgrid,.kpi-list{grid-template-columns:1fr}.shell{min-height:auto}main{padding:12px}header img{width:54px;height:54px}}
+@media print{header,aside,.topbar,.actions,.btn,.no-print{display:none!important}.shell{display:block}main{padding:0}.panel,.card{box-shadow:none;border:1px solid #ddd}.section{display:none!important}.section.active{display:block!important}body{background:white}}
 </style>
 </head>
 <body>
-<header><h1>ثانوي قريش</h1><div>نظام الصيانة والمتابعة الإلكترونية</div></header>
-<div class="wrap">
-<section id="auth" class="card" style="max-width:520px;margin:25px auto">
-<h2>تسجيل الدخول</h2>
-<p class="muted">الحساب المعتمد: abu9hala99@gmail.com</p>
-<label>البريد الإلكتروني</label><input id="email" type="email" value="abu9hala99@gmail.com">
-<label>كلمة المرور</label><input id="password" type="password" placeholder="كلمة المرور">
-<div class="actions">
-<button class="primary" onclick="signIn()">دخول</button>
-<button class="blue" onclick="signUp()">إنشاء/تفعيل الحساب</button>
- <button type="button" class="light" onclick="resetPassword()">نسيت كلمة المرور؟</button>
-</div><p id="authMsg" class="muted"></p>
-</section>
 
-<section id="app" class="hide">
-<div class="card"><b id="who"></b><button class="light" style="float:left" onclick="signOut()">خروج</button></div>
-<div class="tabs">
-<button class="tab on" onclick="tab('dash',this)">لوحة المؤشرات</button>
-<button class="tab" onclick="tab('form',this)">بلاغ جديد</button>
-<button class="tab" onclick="tab('log',this)">سجل الصيانة</button>
-<button class="tab" onclick="tab('team',this)">فريق العمل</button>
+<div class="app" id="app">
+<header>
+  <img src="logo.jpeg" alt="الشعار">
+  <div class="title">
+    <h1>السجل الإلكتروني لمتابعة الطلاب</h1>
+    <div>قريش الثانوية • محمد الثقفي – معلم لغة عربية</div>
+  </div>
+  <div class="grow"></div>
+  
+</header>
+
+<div class="shell">
+<aside>
+  <button class="navbtn active" data-sec="dashboard" onclick="showSec('dashboard',this)">لوحة المؤشرات</button>
+  <button class="navbtn" data-sec="studentsSec" onclick="showSec('studentsSec',this)">الفصول والطلاب</button>
+  <button class="navbtn" data-sec="attendanceSec" onclick="showSec('attendanceSec',this)">الحضور اليومي</button>
+  <button class="navbtn" data-sec="assessmentSec" onclick="showSec('assessmentSec',this)">التقييم السريع</button>
+  <button class="navbtn" data-sec="behaviorSec" onclick="showSec('behaviorSec',this)">المتابعة السلوكية</button>
+  <button class="navbtn" data-sec="tasksSec" onclick="showSec('tasksSec',this)">الواجبات والمهام</button>
+  <button class="navbtn" data-sec="contactsSec" onclick="showSec('contactsSec',this)">التواصل والمتابعة</button>
+  <button class="navbtn" data-sec="lessonSec" onclick="showSec('lessonSec',this)">متابعة الحصة</button>
+  <button class="navbtn" data-sec="plannerSec" onclick="showSec('plannerSec',this)">خطة المتابعة الأسبوعية</button>
+  <button class="navbtn" data-sec="rankingSec" onclick="showSec('rankingSec',this)">الترتيب والتحفيز</button>
+  <button class="navbtn" data-sec="gradebookSec" onclick="showSec('gradebookSec',this)">سجل الدرجات النهائي</button>
+  <button class="navbtn" data-sec="periodsSec" onclick="showSec('periodsSec',this)">الفترات والأرشفة</button>
+  <button class="navbtn" data-sec="portfolioSec" onclick="showSec('portfolioSec',this)">ملف الإنجاز</button>
+  <button class="navbtn" data-sec="curriculumSec" onclick="showSec('curriculumSec',this)">تحضير الدروس والمنهج</button>
+  <button class="navbtn" data-sec="parentReportSec" onclick="showSec('parentReportSec',this)">تقرير ولي الأمر</button>
+  <button class="navbtn" data-sec="executiveSec" onclick="showSec('executiveSec',this)">التقرير التنفيذي</button>
+  <button class="navbtn" data-sec="systemSec" onclick="showSec('systemSec',this)">سلامة السجل والنسخ الاحتياطي</button>
+  <button class="navbtn" data-sec="profilesSec" onclick="showSec('profilesSec',this)">ملف الطالب</button>
+  <button class="navbtn" data-sec="plansSec" onclick="showSec('plansSec',this)">الخطط العلاجية والإثرائية</button>
+  <button class="navbtn" data-sec="reportsSec" onclick="showSec('reportsSec',this)">التقارير والتصدير</button>
+  <button class="navbtn" data-sec="settingsSec" onclick="showSec('settingsSec',this)">الإعدادات</button>
+</aside>
+
+<main>
+<div class="topbar">
+    <span id="saveIndicator" class="badge good">● محفوظ محليًا</span>
+  <select id="classSel" onchange="renderAll()"></select>
+  <button class="btn" onclick="addClass()">+ إضافة فصل</button>
+  <button class="btn" onclick="openStudent()">+ إضافة طالب</button>
+  <button class="btn alt" onclick="bulkStudents()">إضافة قائمة طلاب</button>
+  <label class="btn gold" for="rosterImport">استيراد أسماء CSV</label>
+  <input id="rosterImport" class="hidden" type="file" accept=".csv,text/csv" onchange="importRosterCSV(event)">
 </div>
 
-<div id="dash" class="page">
-<div class="grid">
-<div class="card kpi">إجمالي البلاغات<b id="all">0</b></div>
-<div class="card kpi">جديدة<b id="new">0</b></div>
-<div class="card kpi">قيد التنفيذ<b id="doing">0</b></div>
-<div class="card kpi">مكتملة<b id="done">0</b></div>
-<div class="card kpi">مؤجلة<b id="hold">0</b></div>
-</div></div>
+<section id="dashboard" class="section active">
+  <div class="notice" style="margin-bottom:14px"><b>مرحبًا أ. محمد الثقفي</b> — السجل يفتح مباشرة بدون كلمة مرور في هذه النسخة لتجنب مشكلة الدخول على الآيفون.</div>
+  <div class="cards">
+    <div class="card"><span>عدد الطلاب</span><b id="kStudents">0</b></div>
+    <div class="card"><span>متوسط الأداء</span><b id="kAvg">0%</b></div>
+    <div class="card"><span>غياب هذا الشهر</span><b id="kAbs">0</b></div>
+    <div class="card"><span>يحتاجون متابعة</span><b id="kFollow">0</b></div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>مؤشرات الأداء</h3>
+      <div id="perfChart"></div>
+    </div>
+    <div class="panel">
+      <h3>توزيع المستويات</h3>
+      <div id="levelChart"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>تنبيهات المتابعة الذكية</h3>
+    <div id="smartAlerts"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>تقدم تنفيذ المنهج</h3>
+    <div id="dashboardCurriculum"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>الإنجازات والتحفيز</h3>
+    <div id="dashboardPortfolio"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>تحليل المهارات اللغوية للفصل</h3>
+    <div id="dashboardSkills"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>مقارنة الفصول</h3>
+    <div id="classCompare"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>ملخص المتابعة الشهرية</h3>
+    <div id="monthlySummary"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>ملخص الفصل</h3>
+    <div class="kpi-list" id="classSummary"></div>
+  </div>
+</section>
 
-<div id="form" class="page hide"><div class="card"><h2>تسجيل بلاغ صيانة</h2><div class="grid">
-<div><label>التاريخ</label><input id="d" type="date"></div>
-<div><label>مقدم البلاغ</label><input id="reporter" value="محمد الثقفي"></div>
-<div><label>الموقع</label><select id="loc"><option>الفصول</option><option>المعامل</option><option>المكاتب</option><option>المرافق</option><option>الساحات</option><option>دورات المياه</option><option>أخرى</option></select></div>
-<div><label>نوع البلاغ</label><select id="typ"><option>صيانة كهرباء</option><option>صيانة تكييف</option><option>صيانة أجهزة</option><option>أثاث وتجهيزات</option><option>شبكات وتقنية</option><option>سباكة</option><option>أخرى</option></select></div>
-<div><label>الأولوية</label><select id="pri"><option>متوسط</option><option>عاجل</option><option>عالي</option><option>منخفض</option></select></div>
-<div><label>الحالة</label><select id="sta"><option>جديد</option><option>قيد التنفيذ</option><option>مكتمل</option><option>مؤجل</option></select></div>
-<div><label>المسؤول</label><input id="owner" value="محمد الثقفي"></div>
-<div><label>تاريخ الإنجاز</label><input id="finish" type="date"></div>
-<div style="grid-column:1/-1"><label>وصف المشكلة</label><textarea id="desc"></textarea></div>
-<div style="grid-column:1/-1"><label>ملاحظات</label><textarea id="notes"></textarea></div>
-</div><button class="primary" onclick="saveReport()">حفظ البلاغ</button><p id="saveMsg"></p></div></div>
+<section id="studentsSec" class="section">
+  <div class="panel">
+    <div class="profile-head"><h3>الفصول والطلاب</h3><div class="actions"><button class="btn alt" onclick="renameClass()">تعديل اسم الفصل</button><button class="btn bad" onclick="deleteClass()">حذف الفصل</button></div></div><div class="classchips" id="classChips"></div>
+<div class="topbar" style="margin-top:10px"><input id="studentSearch" placeholder="بحث عن طالب..." oninput="renderStudents()" style="min-width:220px"></div>
+    <div class="tablewrap" style="margin-top:12px">
+      <table>
+        <thead><tr><th>الطالب</th><th>المشاركة</th><th>الواجبات</th><th>المهام</th><th>الاختبارات</th><th>المتوسط</th><th>المستوى</th><th>إجراء</th></tr></thead>
+        <tbody id="studentsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
-<div id="log" class="page hide"><div class="card"><h2>سجل الصيانة</h2><div class="scroll"><table>
-<thead><tr><th>#</th><th>التاريخ</th><th>المبلغ</th><th>الموقع</th><th>النوع</th><th>الوصف</th><th>الأولوية</th><th>الحالة</th><th>المسؤول</th><th>الإنجاز</th><th>ملاحظات</th><th>حذف</th></tr></thead>
-<tbody id="rows"></tbody></table></div></div></div>
+<section id="attendanceSec" class="section">
+  <div class="att-grid">
+    <div class="panel">
+      <h3>تسجيل الحضور والغياب</h3>
+<p class="muted">يمكن تسجيل طالب واحد، أو استخدام الحضور الجماعي للفصل.</p>
+      <div class="formgrid">
+        <input id="attDate" type="date">
+        <select id="attStudent"></select>
+        <select id="attStatus"><option value="present">حاضر</option><option value="absent">غائب</option><option value="late">متأخر</option><option value="excused">غياب بعذر</option></select>
+        <input id="attReason" placeholder="السبب / الملاحظة">
+      </div>
+      <div class="actions" style="margin-top:10px">
+<button class="btn" onclick="saveAttendance()">حفظ الحالة</button>
+<button class="btn gold" onclick="markAllPresent()">تسجيل الجميع حاضر</button>
+</div>
+    </div>
+    <div class="panel">
+      <h3>إحصاء الحضور</h3>
+      <div id="attStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل الحضور</h3>
+    <div class="tablewrap">
+      <table><thead><tr><th>التاريخ</th><th>الطالب</th><th>الحالة</th><th>الملاحظة</th><th>إجراء</th></tr></thead><tbody id="attBody"></tbody></table>
+    </div>
+  </div>
+</section>
 
-<div id="team" class="page hide"><div class="card"><h2>فريق الإشراف والمتابعة</h2>
-<div class="grid"><div class="card"><b>منسق الصيانة</b><p>محمد الثقفي</p></div><div class="card"><b>وكيل الشؤون المدرسية</b><p>خليل أبو جرة</p></div><div class="card"><b>مدير المدرسة</b><p>محمد الثبيتي</p></div></div>
-</div></div>
-</section></div>
+
+<section id="assessmentSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>تقييم سريع للطالب</h3>
+      <p class="muted">سجل درجة سريعة في مهارة لغوية، وسيظهر متوسط المهارات في ملف الطالب.</p>
+      <div class="formgrid">
+        <select id="skillStudent"></select>
+        <select id="skillName">
+          <option>النحو</option><option>الإملاء</option><option>القراءة</option>
+          <option>الكتابة</option><option>الإلقاء</option><option>الفهم اللغوي</option>
+        </select>
+        <input id="skillScore" type="number" min="0" max="100" placeholder="الدرجة من 100">
+        <input id="skillNote" placeholder="ملاحظة مختصرة">
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="saveSkill()">حفظ التقييم</button>
+    </div>
+    <div class="panel">
+      <h3>المهارات الأكثر احتياجًا</h3>
+      <div id="skillNeeds"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل التقييمات</h3>
+    <div class="tablewrap">
+      <table><thead><tr><th>الطالب</th><th>المهارة</th><th>الدرجة</th><th>الملاحظة</th><th>إجراء</th></tr></thead><tbody id="skillsBody"></tbody></table>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>مقياس القراءة والإلقاء</h3>
+    <p class="muted">مقياس سريع من 1 إلى 5 لكل معيار، ثم يحسب التقدير من 100.</p>
+    <div class="formgrid">
+      <select id="rubricStudent"></select>
+      <input id="rubricDate" type="date">
+      <label>سلامة النطق <input id="rPron" type="number" min="1" max="5" value="3"></label>
+      <label>الطلاقة <input id="rFlu" type="number" min="1" max="5" value="3"></label>
+      <label>الفهم <input id="rComp" type="number" min="1" max="5" value="3"></label>
+      <label>التعبير والأداء <input id="rExpr" type="number" min="1" max="5" value="3"></label>
+    </div>
+    <button class="btn" style="margin-top:10px" onclick="saveRubric()">حفظ تقييم القراءة والإلقاء</button>
+    <div id="rubricRecent" style="margin-top:10px"></div>
+  </div>
+</section>
+
+<section id="behaviorSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>تسجيل ملاحظة سلوكية</h3>
+      <div class="formgrid">
+        <select id="behaviorStudent"></select>
+        <select id="behaviorType">
+          <option>مشاركة إيجابية</option>
+          <option>تعاون مع الزملاء</option>
+          <option>التزام وانضباط</option>
+          <option>تميز في أداء مهمة</option>
+          <option>مقاطعة المعلم أو الزملاء</option>
+          <option>عدم إحضار الأدوات</option>
+          <option>عدم إنجاز الواجب</option>
+          <option>تأخر عن الحصة</option>
+          <option>تشتت وعدم تركيز</option>
+          <option>استخدام غير مناسب للجهاز</option>
+          <option>أخرى</option>
+        </select>
+        <select id="behaviorKind"><option value="positive">إيجابية</option><option value="needs">تحتاج متابعة</option></select>
+        <input id="behaviorNote" placeholder="تفاصيل مختصرة">
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="saveBehavior()">حفظ الملاحظة</button>
+    </div>
+    <div class="panel">
+      <h3>مؤشرات السلوك</h3>
+      <div id="behaviorStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل الملاحظات السلوكية</h3>
+    <div class="tablewrap">
+      <table><thead><tr><th>التاريخ</th><th>الطالب</th><th>الملاحظة</th><th>التصنيف</th><th>التفاصيل</th><th>إجراء</th></tr></thead><tbody id="behaviorBody"></tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="tasksSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>إضافة واجب أو مهمة</h3>
+      <div class="formgrid">
+        <input id="workTitle" placeholder="عنوان الواجب / المهمة">
+        <select id="workType"><option>واجب</option><option>مهمة أدائية</option><option>نشاط صفي</option><option>اختبار قصير</option></select>
+        <input id="workMax" type="number" min="1" value="10" placeholder="الدرجة الكاملة">
+        <input id="workDate" type="date">
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="addWork()">إضافة</button>
+    </div>
+    <div class="panel">
+      <h3>ملخص الإنجاز</h3>
+      <div id="workStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>الواجبات والمهام المسجلة</h3>
+    <div class="tablewrap"><table><thead><tr><th>العنوان</th><th>النوع</th><th>التاريخ</th><th>الدرجة</th><th>التصحيح</th><th>إجراء</th></tr></thead><tbody id="worksBody"></tbody></table></div>
+  </div>
+  <div class="panel" id="gradingPanel" style="margin-top:14px;display:none">
+    <h3 id="gradingTitle">رصد الدرجات</h3>
+    <div class="tablewrap"><table><thead><tr><th>الطالب</th><th>الدرجة</th><th>الحالة</th></tr></thead><tbody id="gradingBody"></tbody></table></div>
+    <button class="btn" style="margin-top:10px" onclick="saveGrades()">حفظ الدرجات</button>
+  </div>
+</section>
+
+<section id="contactsSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>تسجيل تواصل أو متابعة</h3>
+      <div class="formgrid">
+        <select id="contactStudent"></select>
+        <select id="contactType">
+          <option>اتصال بولي الأمر</option>
+          <option>رسالة لولي الأمر</option>
+          <option>مقابلة ولي أمر</option>
+          <option>متابعة مع المرشد الطلابي</option>
+          <option>متابعة أكاديمية داخل المدرسة</option>
+        </select>
+        <input id="contactDate" type="date">
+        <select id="contactResult">
+          <option>تم التواصل</option>
+          <option>لم يتم الرد</option>
+          <option>تم الاتفاق على متابعة</option>
+          <option>تم حل الملاحظة</option>
+          <option>تحتاج متابعة لاحقة</option>
+        </select>
+        <textarea id="contactNote" class="full" rows="3" placeholder="تفاصيل التواصل والإجراء المتفق عليه"></textarea>
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="saveContact()">حفظ المتابعة</button>
+    </div>
+    <div class="panel">
+      <h3>مؤشرات التواصل</h3>
+      <div id="contactStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل التواصل والمتابعة</h3>
+    <div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>الطالب</th><th>نوع التواصل</th><th>النتيجة</th><th>التفاصيل</th><th>إجراء</th></tr></thead><tbody id="contactsBody"></tbody></table></div>
+  </div>
+</section>
+
+<section id="lessonSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>متابعة الحصة اليومية</h3>
+      <p class="muted">سجل مشاركة الطالب أو إنجازه داخل الحصة بسرعة.</p>
+      <div class="formgrid">
+        <input id="lessonDate" type="date">
+        <select id="lessonStudent"></select>
+        <select id="lessonItem">
+          <option>مشاركة صفية</option><option>إجابة متميزة</option><option>قراءة جهرية</option>
+          <option>نشاط تعاوني</option><option>إنجاز المهمة داخل الحصة</option><option>يحتاج دعمًا أثناء الحصة</option>
+        </select>
+        <select id="lessonPoints">
+          <option value="3">3 نقاط</option><option value="2">2 نقطتان</option>
+          <option value="1">1 نقطة</option><option value="0">0</option>
+        </select>
+        <input id="lessonNote" class="full" placeholder="ملاحظة مختصرة">
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="saveLesson()">حفظ المتابعة</button>
+    </div>
+    <div class="panel">
+      <h3>نجوم المشاركة</h3>
+      <div id="lessonLeaders"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل الحصة</h3>
+    <div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>الطالب</th><th>المتابعة</th><th>النقاط</th><th>الملاحظة</th><th>إجراء</th></tr></thead><tbody id="lessonBody"></tbody></table></div>
+  </div>
+</section>
+
+<section id="plannerSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>إضافة متابعة أسبوعية</h3>
+      <div class="formgrid">
+        <input id="planWeek" type="week">
+        <select id="planStudent"></select>
+        <select id="planGoal">
+          <option>رفع مستوى المشاركة</option>
+          <option>تحسين الواجبات</option>
+          <option>علاج ضعف مهارة لغوية</option>
+          <option>تقليل الغياب أو التأخر</option>
+          <option>تعزيز سلوك إيجابي</option>
+          <option>إثراء طالب متفوق</option>
+        </select>
+        <select id="planStatus">
+          <option>جديدة</option>
+          <option>قيد التنفيذ</option>
+          <option>تحسن ملحوظ</option>
+          <option>مكتملة</option>
+        </select>
+        <textarea id="planAction" class="full" rows="3" placeholder="الإجراء المقترح أو النشاط العلاجي/الإثرائي"></textarea>
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="saveWeeklyPlan()">حفظ الخطة</button>
+    </div>
+    <div class="panel">
+      <h3>مؤشرات الخطة الأسبوعية</h3>
+      <div id="planStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل المتابعة الأسبوعية</h3>
+    <div class="tablewrap">
+      <table><thead><tr><th>الأسبوع</th><th>الطالب</th><th>الهدف</th><th>الحالة</th><th>الإجراء</th><th>إجراء</th></tr></thead><tbody id="planBody"></tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="rankingSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>ترتيب الطلاب</h3>
+      <p class="muted">يعتمد الترتيب على متوسط الأداء الأكاديمي، مع إظهار نقاط المشاركة الصفية كمؤشر إضافي.</p>
+      <div id="rankingList"></div>
+    </div>
+    <div class="panel">
+      <div class="profile-head"><h3>لوحة التميز</h3><button class="btn gold no-print" onclick="certificateText()">عبارة شهادة تقدير</button></div>
+      <div id="honorBoard"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="profile-head">
+      <h3>كشف شامل للفصل</h3>
+      <button class="btn no-print" onclick="window.print()">طباعة الكشف</button>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>الترتيب</th><th>الطالب</th><th>المتوسط</th><th>المستوى</th><th>نقاط المشاركة</th><th>الغياب</th><th>الخطط النشطة</th></tr></thead>
+        <tbody id="rankingBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="gradebookSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>إعداد أوزان التقييم</h3>
+      <p class="muted">يمكن تعديل الأوزان حسب أسلوبك في التقويم، ويُحسب المجموع النهائي تلقائيًا.</p>
+      <div class="formgrid">
+        <input id="wPart" type="number" min="0" max="100" value="20" placeholder="المشاركة %">
+        <input id="wHome" type="number" min="0" max="100" value="20" placeholder="الواجبات %">
+        <input id="wTask" type="number" min="0" max="100" value="25" placeholder="المهام %">
+        <input id="wExam" type="number" min="0" max="100" value="35" placeholder="الاختبارات %">
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="saveWeights()">حفظ الأوزان</button>
+      <div id="weightCheck" class="notice" style="margin-top:10px"></div>
+    </div>
+    <div class="panel">
+      <h3>إحصاءات الدرجات النهائية</h3>
+      <div id="finalStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <div class="profile-head">
+      <h3>كشف الدرجات النهائي</h3>
+      <div class="actions">
+        <button class="btn" onclick="window.print()">طباعة</button>
+        <button class="btn gold" onclick="exportFinalCSV()">تصدير CSV</button>
+      </div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>الطالب</th><th>المشاركة</th><th>الواجبات</th><th>المهام</th><th>الاختبارات</th><th>المجموع النهائي</th><th>التقدير</th><th>الحالة</th></tr></thead>
+        <tbody id="finalGradesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>رصد جماعي سريع</h3>
+    <p class="muted">اختر بندًا واحدًا ثم أدخل درجات جميع الطلاب دفعة واحدة.</p>
+    <div class="topbar">
+      <select id="bulkGradeField" onchange="renderBulkGrades()">
+        <option value="part">المشاركة</option>
+        <option value="home">الواجبات</option>
+        <option value="task">المهام</option>
+        <option value="exam">الاختبارات</option>
+      </select>
+      <button class="btn" onclick="saveBulkGrades()">حفظ الرصد الجماعي</button>
+    </div>
+    <div class="tablewrap">
+      <table><thead><tr><th>الطالب</th><th>الدرجة من 100</th></tr></thead><tbody id="bulkGradeBody"></tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="periodsSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>الفترات الدراسية</h3>
+      <p class="muted">أنشئ فترة مثل: الفترة الأولى، الثانية، منتصف الفصل، أو نهاية الفصل؛ ثم احفظ لقطة من نتائج الفصل للرجوع إليها لاحقًا.</p>
+      <div class="formgrid">
+        <input id="periodName" placeholder="اسم الفترة">
+        <input id="periodDate" type="date">
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="archivePeriod()">حفظ لقطة الفترة الحالية</button>
+    </div>
+    <div class="panel">
+      <h3>مقارنة الفترات</h3>
+      <div id="periodCompare"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>أرشيف الفترات</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>الفترة</th><th>التاريخ</th><th>الفصل</th><th>عدد الطلاب</th><th>متوسط الفصل</th><th>إجراء</th></tr></thead>
+        <tbody id="periodBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="portfolioSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>إضافة إنجاز للطالب</h3>
+      <div class="formgrid">
+        <select id="portfolioStudent"></select>
+        <input id="portfolioDate" type="date">
+        <select id="portfolioType">
+          <option>تميز أكاديمي</option><option>مشاركة صفية</option><option>بحث أو مشروع</option>
+          <option>قراءة وإلقاء</option><option>تحسن ملحوظ</option><option>مبادرة وسلوك إيجابي</option>
+          <option>مسابقة أو تكريم</option>
+        </select>
+        <input id="portfolioTitle" placeholder="عنوان الإنجاز">
+        <textarea id="portfolioNote" class="full" rows="3" placeholder="وصف مختصر للإنجاز"></textarea>
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="savePortfolio()">حفظ الإنجاز</button>
+    </div>
+    <div class="panel">
+      <h3>مؤشرات الإنجاز</h3>
+      <div id="portfolioStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل إنجازات الطلاب</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>التاريخ</th><th>الطالب</th><th>النوع</th><th>الإنجاز</th><th>الوصف</th><th>إجراء</th></tr></thead>
+      <tbody id="portfolioBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="curriculumSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>تحضير درس جديد</h3>
+      <div class="formgrid">
+        <input id="lessonPlanDate" type="date">
+        <input id="lessonPlanUnit" placeholder="الوحدة / الكفاية">
+        <input id="lessonPlanTitle" class="full" placeholder="عنوان الدرس">
+        <textarea id="lessonPlanObjectives" class="full" rows="3" placeholder="نواتج التعلم / الأهداف"></textarea>
+        <textarea id="lessonPlanStrategy" class="full" rows="2" placeholder="الاستراتيجية التعليمية والوسائل"></textarea>
+        <textarea id="lessonPlanActivity" class="full" rows="2" placeholder="النشاط أو التطبيق"></textarea>
+        <input id="lessonPlanHomework" class="full" placeholder="الواجب / المهمة">
+        <select id="lessonPlanStatus"><option>مخطط</option><option>تم التنفيذ</option><option>يحتاج استكمال</option></select>
+      </div>
+      <button class="btn" style="margin-top:10px" onclick="saveLessonPlan()">حفظ التحضير</button>
+    </div>
+    <div class="panel">
+      <h3>مؤشرات تنفيذ المنهج</h3>
+      <div id="curriculumStats"></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>سجل التحضير</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>التاريخ</th><th>الوحدة</th><th>الدرس</th><th>الحالة</th><th>الواجب</th><th>إجراء</th></tr></thead>
+      <tbody id="curriculumBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="parentReportSec" class="section">
+  <div class="grid2">
+    <div class="panel">
+      <h3>إعداد تقرير ولي الأمر</h3>
+      <div class="formgrid">
+        <select id="parentReportStudent" onchange="renderParentReport()"></select>
+        <select id="parentReportTone" onchange="renderParentReport()">
+          <option value="balanced">تقرير متوازن</option>
+          <option value="encourage">تقرير تحفيزي</option>
+          <option value="followup">تقرير متابعة</option>
+        </select>
+      </div>
+      <textarea id="parentExtraNote" class="full" rows="2" placeholder="ملاحظة إضافية لولي الأمر (اختياري)"></textarea>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn" onclick="copyParentReport()">نسخ التقرير</button>
+        <button class="btn gold" onclick="window.print()">طباعة التقرير</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>مؤشرات سريعة</h3>
+      <div id="parentReportKpis"></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px" id="parentReportCard">
+    <div class="profile-head">
+      <div>
+        <h2 style="margin:0">تقرير متابعة طالب</h2>
+        <p class="muted" id="parentReportMeta"></p>
+      </div>
+    </div>
+    <div id="parentReportContent"></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>ملخص الحضور لهذا الشهر</h3>
+    <div id="attendanceMonthSummary"></div>
+  </div>
+</section>
+
+<section id="executiveSec" class="section">
+  <div class="panel">
+    <div class="profile-head">
+      <div>
+        <h2 style="margin:0">التقرير التنفيذي للفصل</h2>
+        <p class="muted">ملخص شامل قابل للطباعة للاستخدام في المتابعة المدرسية.</p>
+      </div>
+      <button class="btn no-print" onclick="window.print()">طباعة التقرير</button>
+    </div>
+    <div id="executiveHeader"></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>المؤشرات الرئيسة</h3>
+    <div id="executiveKpis"></div>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="panel"><h3>تصنيف الطلاب</h3><div id="executiveLevels"></div></div>
+    <div class="panel"><h3>تحليل المهارات</h3><div id="executiveSkills"></div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="panel"><h3>أولوية المتابعة</h3><div id="executivePriority"></div></div>
+    <div class="panel"><h3>الطلاب المتفوقون</h3><div id="executiveExcellent"></div></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>التوصيات المقترحة</h3>
+    <div id="executiveRecommendations"></div>
+  </div>
+</section>
+
+<section id="systemSec" class="section">
+  <div class="panel">
+    <h2>سلامة السجل والنسخ الاحتياطي</h2>
+    <p class="muted">مركز نهائي لفحص البيانات وحفظ نسخة احتياطية واستعادتها.</p>
+    <div id="systemHealth"></div>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="panel">
+      <h3>النسخ الاحتياطي</h3>
+      <p>احفظ نسخة من جميع الفصول والطلاب والتقييمات والتقارير.</p>
+      <button class="btn" onclick="exportBackupFinal()">تنزيل نسخة احتياطية JSON</button>
+      <p class="muted" id="lastBackupInfo"></p>
+    </div>
+    <div class="panel">
+      <h3>الاستعادة</h3>
+      <p>استعد نسخة سابقة من السجل. سيتم التحقق من الملف قبل الاستبدال.</p>
+      <input id="finalBackupFile" type="file" accept=".json,application/json">
+      <button class="btn gold" style="margin-top:10px" onclick="restoreBackupFinal()">فحص واستعادة النسخة</button>
+      <button class="btn" style="margin-top:10px" onclick="restoreSafetySnapshot()">استعادة آخر نسخة أمان تلقائية</button>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>فحص الجاهزية</h3>
+    <div id="readinessChecklist"></div>
+  </div>
+</section>
+<section id="profilesSec" class="section">
+  <div class="panel">
+    <div class="profile-head">
+      <h3>ملف الطالب</h3>
+      <select id="profileStudent" onchange="renderProfile()"></select>
+    </div>
+    <div id="profileContent" style="margin-top:14px"></div>
+  </div>
+</section>
+
+<section id="plansSec" class="section">
+  <div class="panel" style="margin-bottom:14px">
+    <h3>تشخيص الاحتياج</h3>
+    <div id="diagnosticNeeds"></div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>الخطة العلاجية</h3>
+      <div id="remedialPlan"></div>
+    </div>
+    <div class="panel">
+      <h3>الخطة الإثرائية</h3>
+      <div id="enrichmentPlan"></div>
+    </div>
+  </div>
+</section>
+
+<section id="reportsSec" class="section">
+  <div class="panel">
+    <h3>التقارير والتصدير</h3>
+    <p class="muted">يمكنك طباعة تقرير الفصل، أو تصدير CSV، أو حفظ نسخة احتياطية كاملة واستعادتها لاحقًا.</p>
+<div class="notice"><b>مهم:</b> لأن هذه النسخة تحفظ البيانات على الجهاز، احفظ نسخة احتياطية JSON دوريًا، خصوصًا بعد إدخال درجات كثيرة.</div>
+    <div class="actions">
+      <button class="btn" onclick="window.print()">طباعة التقرير</button>
+      <button class="btn gold" onclick="studentReportText()">تقرير طالب نصي</button>
+      <button class="btn" onclick="exportCSV()">تصدير CSV</button>
+      <button class="btn" onclick="exportBackup()">نسخة احتياطية JSON</button>
+      <button class="btn alt" onclick="downloadRosterTemplate()">نموذج أسماء الطلاب CSV</button>
+      <label class="btn alt" for="importFile">استعادة نسخة احتياطية</label>
+      <input id="importFile" class="hidden" type="file" accept=".json" onchange="importBackup(event)">
+    </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>ملخص جاهز للطباعة</h3>
+    <div id="printSummary"></div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>كشف حضور مختصر</h3>
+    <div class="tablewrap">
+      <table><thead><tr><th>الطالب</th><th>حاضر</th><th>غائب</th><th>بعذر</th><th>متأخر</th><th>نسبة الحضور</th></tr></thead><tbody id="attendanceSummaryBody"></tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="settingsSec" class="section">
+  <div class="panel">
+    <h3>الإعدادات</h3>
+    <div class="formgrid">
+      <input id="schoolName" value="قريش الثانوية" placeholder="اسم المدرسة">
+      <input id="teacherName" value="محمد الثقفي" placeholder="اسم المعلم">
+      <input id="teacherRole" value="معلم لغة عربية" placeholder="المسمى">
+      <input id="semesterName" value="الفصل الدراسي الأول 1448هـ" placeholder="الفصل الدراسي">
+      
+      <textarea id="schoolNote" class="full" rows="3" placeholder="ملاحظة عامة للسجل"></textarea>
+    </div>
+    <button class="btn" style="margin-top:10px" onclick="saveSettings()">حفظ الإعدادات</button>
+    <div class="notice" style="margin-top:12px" id="dataHealth"></div>
+  </div>
+</section>
+
+<p class="small muted" style="text-align:center;margin-top:20px">قريش الثانوية • السجل الإلكتروني • الإصدار 20 — النسخة المستقرة</p></main>
+</div>
+</div>
+
+<div class="modal" id="studentModal">
+  <div class="box">
+    <h3 id="studentModalTitle">بيانات الطالب</h3>
+    <div class="formgrid">
+      <input id="sName" class="full" placeholder="اسم الطالب">
+      <input id="sPart" type="number" min="0" max="100" placeholder="المشاركة %">
+      <input id="sHome" type="number" min="0" max="100" placeholder="الواجبات %">
+      <input id="sTask" type="number" min="0" max="100" placeholder="المهام والأنشطة %">
+      <input id="sExam" type="number" min="0" max="100" placeholder="الاختبارات %">
+      <textarea id="sNotes" class="full" rows="3" placeholder="ملاحظات على الطالب"></textarea>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn" onclick="saveStudent()">حفظ</button>
+      <button class="btn alt" onclick="closeStudent()">إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <script>
-const sb = supabase.createClient("https://jpfkkqifkzuphpwlloba.supabase.co","sb_publishable_zueCU9xcD3MqYaYqVyp8aA_wQqHrUPj");
-const allowed="abu9hala99@gmail.com".toLowerCase();
-d.value=new Date().toISOString().slice(0,10);
+const KEY='quraish_record_v3';
+const DEFAULT={
+ settings:{school:'قريش الثانوية',teacher:'محمد الثقفي',role:'معلم لغة عربية',note:'',weights:{part:20,home:20,task:25,exam:35},archives:[]},
+ classes:[
+  {id:1,name:'الفصل 1',students:[],attendance:[]},
+  {id:2,name:'الفصل 2',students:[],attendance:[]}
+ ]
+};
+let data=JSON.parse(localStorage.getItem(KEY)||'null')||DEFAULT;
+let editing=-1;
 
-async function signUp(){
- const email=document.getElementById('email').value.trim().toLowerCase(), password=document.getElementById('password').value;
- if(email!==allowed) return msg("هذا البريد غير معتمد.");
- if(password.length<6) return msg("اختر كلمة مرور من 6 أحرف على الأقل.");
- const {error}=await sb.auth.signUp({email,password});
- msg(error?error.message:"تم إرسال رسالة تأكيد إلى البريد إن كان تأكيد البريد مفعّلًا. بعد التأكيد سجّل الدخول.");
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function currentClass(){
+ const c=data.classes.find(c=>c.id==classSel.value)||data.classes[0];
+ if(!c.attendance)c.attendance=[];
+ if(!c.skills)c.skills=[];
+ if(!c.behavior)c.behavior=[];
+ if(!c.works)c.works=[];
+ if(!c.contacts)c.contacts=[];
+ if(!c.lessons)c.lessons=[];
+ if(!c.weeklyPlans)c.weeklyPlans=[];
+ if(!c.portfolio)c.portfolio=[];
+ if(!c.curriculum)c.curriculum=[];
+ if(!c.rubrics)c.rubrics=[];
+ return c;
 }
-async function signIn(){
- const email=document.getElementById('email').value.trim().toLowerCase(), password=document.getElementById('password').value;
- if(email!==allowed) return msg("هذا البريد غير معتمد.");
- const {error}=await sb.auth.signInWithPassword({email,password});
- if(error) return msg("تعذر الدخول: "+error.message);
- await showApp();
-}
-async function resetPassword(){
-  const email=document.getElementById('email').value.trim().toLowerCase();
+function studentAvg(s){return Math.round(((+s.part||0)+(+s.home||0)+(+s.task||0)+(+s.exam||0))/4)}
+function levelName(a){return a>=90?'متفوق':a>=75?'جيد جدًا':a>=60?'متوسط':'يحتاج متابعة'}
+function levelBadge(a){return a>=90?'good':a>=60?'warn':'bad'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
-  if(!email) return msg("أدخل البريد الإلكتروني أولًا");
-  if(email!==allowed) return msg("البريد الإلكتروني غير معتمد");
+function showSec(id,btn){
+ document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ if(id==='profilesSec')renderProfile();
+ if(id==='plansSec')renderPlans();
+ if(id==='reportsSec')renderPrintSummary();
+}
 
-  const {error}=await sb.auth.resetPasswordForEmail(email,{
-    redirectTo: window.location.origin
-  });
+function renderAll(){
+ let old=classSel.value;
+ classSel.innerHTML=data.classes.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+ if(old && data.classes.some(c=>c.id==old)) classSel.value=old;
+ renderDashboard();renderStudents();renderAttendance();renderSelectors();renderSkills();renderRubrics();renderBehavior();renderWorks();renderContacts();renderLessons();renderWeeklyPlans();renderRanking();renderGradebook();renderBulkGrades();renderPeriods();renderPortfolio();renderCurriculum();renderParentReport();renderExecutive();renderSystemHealth();renderPlans();renderPrintSummary();
+ save();
+}
+function renderDashboard(){
+ const c=currentClass(), st=c.students, avgs=st.map(studentAvg);
+ kStudents.textContent=st.length;
+ kAvg.textContent=(st.length?Math.round(avgs.reduce((a,b)=>a+b,0)/st.length):0)+'%';
+ const month=new Date().toISOString().slice(0,7);
+ kAbs.textContent=c.attendance.filter(a=>a.date?.startsWith(month)&&['absent','excused'].includes(a.status)).length;
+ kFollow.textContent=st.filter(s=>studentAvg(s)<60).length;
+ const m={
+   'المشاركة':st.length?Math.round(st.reduce((n,s)=>n+(+s.part||0),0)/st.length):0,
+   'الواجبات':st.length?Math.round(st.reduce((n,s)=>n+(+s.home||0),0)/st.length):0,
+   'المهام':st.length?Math.round(st.reduce((n,s)=>n+(+s.task||0),0)/st.length):0,
+   'الاختبارات':st.length?Math.round(st.reduce((n,s)=>n+(+s.exam||0),0)/st.length):0
+ };
+ perfChart.innerHTML=Object.entries(m).map(([k,v])=>`<div class="chartrow"><span>${k}</span><div class="bar"><i style="width:${v}%"></i></div><b>${v}%</b></div>`).join('');
+ const levels={'متفوق':0,'جيد جدًا':0,'متوسط':0,'يحتاج متابعة':0};
+ st.forEach(s=>levels[levelName(studentAvg(s))]++);
+ levelChart.innerHTML=Object.entries(levels).map(([k,v])=>`<div class="chartrow"><span>${k}</span><div class="bar"><i style="width:${st.length?Math.round(v/st.length*100):0}%"></i></div><b>${v}</b></div>`).join('');
+ smartAlerts.innerHTML=(()=>{
+   const low=st.filter(x=>studentAvg(x)<60);
+   const high=st.filter(x=>studentAvg(x)>=90);
+   const absMap=st.map((x,i)=>({x,i,n:c.attendance.filter(a=>a.studentIndex===i&&['absent','excused'].includes(a.status)).length})).filter(x=>x.n>=3);
+   let out=[];
+   if(low.length)out.push('<div class="notice"><b>متابعة أكاديمية:</b> '+low.map(x=>esc(x.name)).join('، ')+'</div>');
+   if(absMap.length)out.push('<div class="notice" style="margin-top:8px"><b>غياب متكرر:</b> '+absMap.map(x=>esc(x.x.name)+' ('+x.n+')').join('، ')+'</div>');
+   if(high.length)out.push('<div class="notice" style="margin-top:8px"><b>فرص إثرائية:</b> '+high.map(x=>esc(x.name)).join('، ')+'</div>');
+   const pendingContacts=c.contacts.filter(x=>x.result==='تحتاج متابعة لاحقة'||x.result==='لم يتم الرد');
+   if(pendingContacts.length)out.push('<div class="notice" style="margin-top:8px"><b>تواصل يحتاج متابعة:</b> '+pendingContacts.length+' حالة</div>');
+   const activePlans=c.weeklyPlans.filter(x=>x.status!=='مكتملة');
+   if(activePlans.length)out.push('<div class="notice" style="margin-top:8px"><b>خطط أسبوعية نشطة:</b> '+activePlans.length+' خطة</div>');
+   const highRisk=c.students.filter((st,i)=>weightedFinal(st)<60 && c.attendance.filter(x=>x.studentIndex===i&&x.status==='absent').length>=2);
+   if(highRisk.length)out.push('<div class="notice" style="margin-top:8px"><b>أولوية متابعة:</b> '+highRisk.map(x=>esc(x.name)).join('، ')+'</div>');
+   return out.join('')||'<p class="muted">لا توجد تنبيهات حالية.</p>';
+ })();
+ if(document.getElementById('dashboardCurriculum')){
+   const ca=c.curriculum||[],done=ca.filter(x=>x.status==='تم التنفيذ').length,rate=ca.length?Math.round(done/ca.length*100):0;
+   dashboardCurriculum.innerHTML=`<div class="chartrow"><span>إنجاز الدروس المسجلة</span><div class="bar"><i style="width:${rate}%"></i></div><b>${rate}%</b></div><p class="muted">تم تنفيذ ${done} من أصل ${ca.length} درسًا مسجلًا.</p>`;
+ }
+ if(document.getElementById('dashboardPortfolio')){
+   const parr=c.portfolio||[], month=new Date().toISOString().slice(0,7), monthN=parr.filter(x=>x.date?.startsWith(month)).length;
+   dashboardPortfolio.innerHTML=`<div class="kpi-list"><div class="kpi">إجمالي الإنجازات<b style="display:block">${parr.length}</b></div><div class="kpi">هذا الشهر<b style="display:block">${monthN}</b></div><div class="kpi">طلاب مكرمون<b style="display:block">${new Set(parr.map(x=>x.studentIndex)).size}</b></div></div>`;
+ }
+ if(document.getElementById('dashboardSkills')){
+   const skillNames=['النحو','الإملاء','القراءة','الكتابة','الإلقاء','الفهم اللغوي'];
+   dashboardSkills.innerHTML=skillNames.map(n=>{
+     const a=c.skills.filter(x=>x.name===n),v=a.length?Math.round(a.reduce((q,x)=>q+x.score,0)/a.length):0;
+     return `<div class="chartrow"><span>${n}</span><div class="bar"><i style="width:${v}%"></i></div><b>${a.length?v+'%':'—'}</b></div>`;
+   }).join('');
+ }
+ classCompare.innerHTML=data.classes.map(cc=>{
+   const vals=cc.students.map(weightedFinal),avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+   return `<div class="chartrow"><span>${esc(cc.name)}</span><div class="bar"><i style="width:${avg}%"></i></div><b>${avg}%</b></div>`;
+ }).join('')||'<p class="muted">لا توجد فصول.</p>';
+ const ym=new Date().toISOString().slice(0,7);
+ monthlySummary.innerHTML=`<div class="kpi-list">
+ <div class="kpi">حالات حضور هذا الشهر<b style="display:block">${c.attendance.filter(x=>x.date?.startsWith(ym)).length}</b></div>
+ <div class="kpi">ملاحظات سلوكية<b style="display:block">${c.behavior.filter(x=>x.date?.startsWith(ym)).length}</b></div>
+ <div class="kpi">عمليات تواصل<b style="display:block">${c.contacts.filter(x=>x.date?.startsWith(ym)).length}</b></div>
+ <div class="kpi">خطط متابعة نشطة<b style="display:block">${c.weeklyPlans.filter(x=>x.status!=='مكتملة').length}</b></div>
+ </div>`;
+ classSummary.innerHTML=[
+  ['أعلى أداء',st.length?Math.max(...avgs)+'%':'—'],
+  ['أقل أداء',st.length?Math.min(...avgs)+'%':'—'],
+  ['حالات حضور مسجلة',c.attendance.length]
+ ].map(x=>`<div class="kpi"><span class="muted">${x[0]}</span><b style="display:block;margin-top:4px">${x[1]}</b></div>`).join('');
+}
+function renderStudents(){
+ const c=currentClass();
+ const q=(document.getElementById('studentSearch')?.value||'').trim();
+ classChips.innerHTML=data.classes.map(x=>`<span class="chip">${esc(x.name)} — ${x.students.length} طالب</span>`).join('');
+ studentsBody.innerHTML=c.students.map((s,i)=>({s,i})).filter(x=>!q||x.s.name.includes(q)).map(({s,i})=>{
+  const a=studentAvg(s);
+  return `<tr><td>${esc(s.name)}</td><td>${s.part||0}%</td><td>${s.home||0}%</td><td>${s.task||0}%</td><td>${s.exam||0}%</td><td>${a}%</td><td><span class="badge ${levelBadge(a)}">${levelName(a)}</span></td><td><div class="actions"><button class="btn" onclick="openStudent(${i})">تعديل</button><button class="btn bad" onclick="deleteStudent(${i})">حذف</button></div></td></tr>`
+ }).join('')||'<tr><td colspan="8">لا يوجد طلاب في هذا الفصل بعد.</td></tr>';
+}
+function renderSelectors(){
+ const c=currentClass(), opts=c.students.map((s,i)=>`<option value="${i}">${esc(s.name)}</option>`).join('');
+ attStudent.innerHTML=opts;profileStudent.innerHTML=opts;if(document.getElementById('skillStudent'))skillStudent.innerHTML=opts;if(document.getElementById('behaviorStudent'))behaviorStudent.innerHTML=opts;if(document.getElementById('contactStudent'))contactStudent.innerHTML=opts;if(document.getElementById('lessonStudent'))lessonStudent.innerHTML=opts;if(document.getElementById('planStudent'))planStudent.innerHTML=opts;if(document.getElementById('portfolioStudent'))portfolioStudent.innerHTML=opts;if(document.getElementById('rubricStudent'))rubricStudent.innerHTML=opts;if(document.getElementById('parentReportStudent'))parentReportStudent.innerHTML=opts;
+ if(!attDate.value)attDate.value=new Date().toISOString().slice(0,10);if(document.getElementById('contactDate')&&!contactDate.value)contactDate.value=new Date().toISOString().slice(0,10);if(document.getElementById('lessonDate')&&!lessonDate.value)lessonDate.value=new Date().toISOString().slice(0,10);if(document.getElementById('portfolioDate')&&!portfolioDate.value)portfolioDate.value=new Date().toISOString().slice(0,10);if(document.getElementById('rubricDate')&&!rubricDate.value)rubricDate.value=new Date().toISOString().slice(0,10);
+}
+function renderAttendance(){
+ const c=currentClass();
+ const map={present:'حاضر',absent:'غائب',late:'متأخر',excused:'غياب بعذر'};
+ attBody.innerHTML=[...c.attendance].sort((a,b)=>b.date.localeCompare(a.date)).map((a,i)=>{
+  const realIndex=c.attendance.indexOf(a), s=c.students[a.studentIndex];
+  return `<tr><td>${esc(a.date)}</td><td>${esc(s?s.name:'طالب محذوف')}</td><td>${map[a.status]||a.status}</td><td>${esc(a.reason||'')}</td><td><button class="btn bad" onclick="deleteAttendance(${realIndex})">حذف</button></td></tr>`
+ }).join('')||'<tr><td colspan="5">لا توجد حالات حضور مسجلة.</td></tr>';
+ const total=c.attendance.length,p=c.attendance.filter(x=>x.status==='present').length,a=c.attendance.filter(x=>['absent','excused'].includes(x.status)).length,l=c.attendance.filter(x=>x.status==='late').length;
+ attStats.innerHTML=`<div class="kpi-list"><div class="kpi">حاضر<b style="display:block">${p}</b></div><div class="kpi">غياب<b style="display:block">${a}</b></div><div class="kpi">تأخر<b style="display:block">${l}</b></div></div><p class="muted">إجمالي الحالات المسجلة: ${total}</p>`;
+}
+function markAllPresent(){
+ const c=currentClass(); if(!c.students.length)return alert('أضف طلابًا أولًا');
+ const date=attDate.value||new Date().toISOString().slice(0,10);
+ if(!confirm('تسجيل جميع طلاب الفصل حاضر لهذا التاريخ؟'))return;
+ c.students.forEach((s,i)=>{
+   const existing=c.attendance.find(a=>a.date===date&&a.studentIndex===i);
+   if(existing){existing.status='present';existing.reason='';}
+   else c.attendance.push({date,studentIndex:i,status:'present',reason:''});
+ });
+ save();renderAll();
+}
+function saveAttendance(){
+ const c=currentClass();
+ if(!c.students.length)return alert('أضف طالبًا أولًا');
+ c.attendance.push({date:attDate.value,studentIndex:+attStudent.value,status:attStatus.value,reason:attReason.value.trim()});
+ attReason.value='';save();renderAll();
+}
+function deleteAttendance(i){if(confirm('حذف هذه الحالة؟')){currentClass().attendance.splice(i,1);renderAll()}}
 
-  if(error) return msg("تعذر إرسال رابط الاستعادة: "+error.message);
 
-  msg("تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني");
+
+function importRosterCSV(e){
+ const file=e.target.files[0]; if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+   try{
+     const lines=String(reader.result).replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
+     const names=[];
+     lines.forEach((line,idx)=>{
+       let first=line.split(',')[0].trim().replace(/^"|"$/g,'');
+       if(idx===0 && /اسم الطالب|الطالب|name/i.test(first))return;
+       if(first)names.push(first);
+     });
+     if(!names.length)return alert('لم يتم العثور على أسماء صالحة في الملف.');
+     const c=currentClass();
+     const existing=new Set(c.students.map(x=>x.name));
+     let added=0;
+     names.forEach(name=>{
+       if(!existing.has(name)){
+         c.students.push({name,part:0,home:0,task:0,exam:0,notes:''});
+         existing.add(name); added++;
+       }
+     });
+     save();renderAll();alert('تمت إضافة '+added+' طالبًا.');
+   }catch(err){alert('تعذر قراءة ملف CSV.')}
+   e.target.value='';
+ };
+ reader.readAsText(file,'utf-8');
 }
-async function signOut(){await sb.auth.signOut(); location.reload()}
-function msg(x){authMsg.textContent=x}
-async function showApp(){
- const {data:{user}}=await sb.auth.getUser();
- if(!user) return;
- if((user.email||"").toLowerCase()!==allowed){await sb.auth.signOut();return msg("الحساب غير مصرح.");}
- auth.classList.add("hide"); app.classList.remove("hide"); who.textContent="محمد الثقفي — منسق الصيانة"; await load();
+function bulkStudents(){
+ const text=prompt('الصق أسماء الطلاب، كل اسم في سطر مستقل:');
+ if(!text)return;
+ const names=text.split(/\n/).map(x=>x.trim()).filter(Boolean),c=currentClass();
+ names.forEach(name=>c.students.push({name,part:0,home:0,task:0,exam:0,notes:''}));
+ save();renderAll();alert('تمت إضافة '+names.length+' طالبًا');
 }
-function tab(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.add('hide'));document.getElementById(id).classList.remove('hide');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
-async function saveReport(){
- const rec={report_date:d.value,reporter:reporter.value.trim(),location:loc.value,report_type:typ.value,description:desc.value.trim(),priority:pri.value,status:sta.value,owner:owner.value.trim(),completion_date:finish.value||null,notes:notes.value.trim()};
- if(!rec.report_date||!rec.reporter||!rec.description) return saveMsg.textContent="أكمل التاريخ ومقدم البلاغ ووصف المشكلة.";
- const {error}=await sb.from("maintenance_reports").insert(rec);
- saveMsg.textContent=error?("خطأ: "+error.message):"تم حفظ البلاغ بنجاح.";
- if(!error){desc.value="";notes.value="";finish.value="";await load();}
+function openStudent(i=-1){
+ editing=i;
+ const s=i>=0?currentClass().students[i]:{name:'',part:'',home:'',task:'',exam:'',notes:''};
+ sName.value=s.name||'';sPart.value=s.part??'';sHome.value=s.home??'';sTask.value=s.task??'';sExam.value=s.exam??'';sNotes.value=s.notes||'';
+ studentModalTitle.textContent=i>=0?'تعديل بيانات الطالب':'إضافة طالب';
+ studentModal.classList.add('show');
 }
-async function load(){
- const {data,error}=await sb.from("maintenance_reports").select("*").order("created_at",{ascending:false});
- if(error){rows.innerHTML='<tr><td colspan=12>'+error.message+'</td></tr>';return}
- all.textContent=data.length; new.textContent=data.filter(x=>x.status==="جديد").length; doing.textContent=data.filter(x=>x.status==="قيد التنفيذ").length; done.textContent=data.filter(x=>x.status==="مكتمل").length; hold.textContent=data.filter(x=>x.status==="مؤجل").length;
- rows.innerHTML=data.map((r,i)=>`<tr><td>${r.id}</td><td>${r.report_date||""}</td><td>${r.reporter||""}</td><td>${r.location||""}</td><td>${r.report_type||""}</td><td>${r.description||""}</td><td>${r.priority||""}</td><td>${r.status||""}</td><td>${r.owner||""}</td><td>${r.completion_date||""}</td><td>${r.notes||""}</td><td><button class="danger" onclick="del(${r.id})">حذف</button></td></tr>`).join("");
+function closeStudent(){studentModal.classList.remove('show')}
+function saveStudent(){
+ if(!sName.value.trim())return alert('اكتب اسم الطالب');
+ const s={name:sName.value.trim(),part:+sPart.value||0,home:+sHome.value||0,task:+sTask.value||0,exam:+sExam.value||0,notes:sNotes.value.trim()};
+ if(editing<0)currentClass().students.push(s); else currentClass().students[editing]=s;
+ closeStudent();renderAll();
 }
-async function del(id){if(!confirm("حذف البلاغ؟"))return;const {error}=await sb.from("maintenance_reports").delete().eq("id",id);if(error)alert(error.message);else await load()}
-sb.auth.getSession().then(({data})=>{if(data.session)showApp()});
-</script></body></html>
+function deleteStudent(i){
+ if(confirm('سيتم حذف الطالب من هذا الفصل. هل تريد المتابعة؟')){
+   const c=currentClass();c.students.splice(i,1);
+   c.attendance=c.attendance.filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   c.skills=c.skills.filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   c.behavior=c.behavior.filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   c.works.forEach(w=>{let ng={};Object.entries(w.grades||{}).forEach(([k,v])=>{k=+k;if(k!==i)ng[k>i?k-1:k]=v});w.grades=ng});
+   c.contacts=c.contacts.filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   c.lessons=c.lessons.filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   c.weeklyPlans=c.weeklyPlans.filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   c.portfolio=(c.portfolio||[]).filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   c.rubrics=(c.rubrics||[]).filter(a=>a.studentIndex!==i).map(a=>({...a,studentIndex:a.studentIndex>i?a.studentIndex-1:a.studentIndex}));
+   renderAll();
+ }
+}
+
+function renameClass(){
+ const c=currentClass(),n=prompt('اسم الفصل:',c.name);
+ if(n&&n.trim()){c.name=n.trim();save();renderAll()}
+}
+function deleteClass(){
+ if(data.classes.length<=1)return alert('يجب الإبقاء على فصل واحد على الأقل.');
+ const c=currentClass();
+ if(confirm('حذف '+c.name+' وجميع بياناته؟')){data.classes=data.classes.filter(x=>x.id!==c.id);save();classSel.value=data.classes[0].id;renderAll()}
+}
+function addClass(){
+ const n=prompt('اكتب اسم الفصل الجديد:');
+ if(n&&n.trim()){data.classes.push({id:Date.now(),name:n.trim(),students:[],attendance:[]});renderAll();classSel.value=data.classes.at(-1).id;renderAll()}
+}
+
+function saveSkill(){
+ const c=currentClass(); if(!c.students.length)return alert('أضف طالبًا أولًا');
+ const score=Math.max(0,Math.min(100,+skillScore.value||0));
+ c.skills.push({studentIndex:+skillStudent.value,name:skillName.value,score,note:skillNote.value.trim(),date:new Date().toISOString().slice(0,10)});
+ skillScore.value='';skillNote.value='';save();renderAll();
+}
+function deleteSkill(i){if(confirm('حذف هذا التقييم؟')){currentClass().skills.splice(i,1);renderAll()}}
+
+function saveRubric(){
+ const c=currentClass();if(!c.students.length)return alert('أضف طالبًا أولًا');
+ const vals=[+rPron.value,+rFlu.value,+rComp.value,+rExpr.value].map(v=>Math.max(1,Math.min(5,v||1)));
+ const score=Math.round(vals.reduce((a,b)=>a+b,0)/20*100);
+ c.rubrics.push({studentIndex:+rubricStudent.value,date:rubricDate.value||new Date().toISOString().slice(0,10),pron:vals[0],flu:vals[1],comp:vals[2],expr:vals[3],score});
+ save();renderAll();
+}
+function renderRubrics(){
+ if(!document.getElementById('rubricRecent'))return;
+ const c=currentClass(),arr=c.rubrics||[];
+ rubricRecent.innerHTML=arr.length?`آخر تقييم: <b>${arr.at(-1).score}%</b> — ${esc(c.students[arr.at(-1).studentIndex]?.name||'')}`:'<span class="muted">لا توجد تقييمات قراءة وإلقاء بعد.</span>';
+}
+function renderSkills(){
+ const c=currentClass();
+ if(!document.getElementById('skillsBody'))return;
+ skillsBody.innerHTML=c.skills.map((x,i)=>{
+   const st=c.students[x.studentIndex];
+   return `<tr><td>${esc(st?st.name:'طالب محذوف')}</td><td>${esc(x.name)}</td><td>${x.score}%</td><td>${esc(x.note||'')}</td><td><button class="btn bad" onclick="deleteSkill(${i})">حذف</button></td></tr>`
+ }).join('')||'<tr><td colspan="5">لا توجد تقييمات مسجلة.</td></tr>';
+ const names=['النحو','الإملاء','القراءة','الكتابة','الإلقاء','الفهم اللغوي'];
+ const avgs=names.map(n=>{let a=c.skills.filter(x=>x.name===n);return [n,a.length?Math.round(a.reduce((q,x)=>q+x.score,0)/a.length):null]});
+ skillNeeds.innerHTML=avgs.map(([n,v])=>`<div class="chartrow"><span>${n}</span><div class="bar"><i style="width:${v??0}%"></i></div><b>${v===null?'—':v+'%'}</b></div>`).join('');
+}
+
+function saveBehavior(){
+ const c=currentClass(); if(!c.students.length)return alert('أضف طالبًا أولًا');
+ c.behavior.push({studentIndex:+behaviorStudent.value,type:behaviorType.value,kind:behaviorKind.value,note:behaviorNote.value.trim(),date:new Date().toISOString().slice(0,10)});
+ behaviorNote.value='';save();renderAll();
+}
+function deleteBehavior(i){if(confirm('حذف الملاحظة؟')){currentClass().behavior.splice(i,1);renderAll()}}
+function renderBehavior(){
+ const c=currentClass(); if(!document.getElementById('behaviorBody'))return;
+ behaviorBody.innerHTML=[...c.behavior].reverse().map(x=>{
+   const i=c.behavior.indexOf(x),st=c.students[x.studentIndex],pos=x.kind==='positive';
+   return `<tr><td>${x.date}</td><td>${esc(st?st.name:'طالب محذوف')}</td><td>${esc(x.type)}</td><td><span class="badge ${pos?'good':'bad'}">${pos?'إيجابية':'تحتاج متابعة'}</span></td><td>${esc(x.note||'')}</td><td><button class="btn bad" onclick="deleteBehavior(${i})">حذف</button></td></tr>`;
+ }).join('')||'<tr><td colspan="6">لا توجد ملاحظات سلوكية مسجلة.</td></tr>';
+ const pos=c.behavior.filter(x=>x.kind==='positive').length,need=c.behavior.filter(x=>x.kind==='needs').length;
+ behaviorStats.innerHTML=`<div class="kpi-list"><div class="kpi">إيجابية<b style="display:block">${pos}</b></div><div class="kpi">تحتاج متابعة<b style="display:block">${need}</b></div><div class="kpi">الإجمالي<b style="display:block">${c.behavior.length}</b></div></div>`;
+}
+
+let gradingWork=-1;
+function addWork(){
+ const c=currentClass(),title=workTitle.value.trim();
+ if(!title)return alert('اكتب عنوان الواجب أو المهمة');
+ c.works.push({title,type:workType.value,max:+workMax.value||10,date:workDate.value||new Date().toISOString().slice(0,10),grades:{}});
+ workTitle.value='';save();renderAll();
+}
+function deleteWork(i){if(confirm('حذف هذا الواجب وجميع درجاته؟')){currentClass().works.splice(i,1);gradingPanel.style.display='none';renderAll()}}
+function openGrading(i){
+ gradingWork=i;const c=currentClass(),w=c.works[i];
+ gradingTitle.textContent='رصد الدرجات — '+w.title;
+ gradingBody.innerHTML=c.students.map((st,si)=>{
+   const v=w.grades?.[si]??'';
+   return `<tr><td>${esc(st.name)}</td><td><input class="gradeInput" data-si="${si}" type="number" min="0" max="${w.max}" value="${v}" style="width:90px"></td><td>${v===''?'لم يرصد':(+v>=w.max*.6?'محقق':'يحتاج متابعة')}</td></tr>`
+ }).join('')||'<tr><td colspan="3">لا يوجد طلاب.</td></tr>';
+ gradingPanel.style.display='block';gradingPanel.scrollIntoView({behavior:'smooth'});
+}
+function saveGrades(){
+ const c=currentClass(),w=c.works[gradingWork];if(!w)return;
+ if(!w.grades)w.grades={};
+ document.querySelectorAll('.gradeInput').forEach(x=>{if(x.value==='')delete w.grades[x.dataset.si];else w.grades[x.dataset.si]=Math.max(0,Math.min(w.max,+x.value||0))});
+ save();renderWorks();openGrading(gradingWork);alert('تم حفظ الدرجات');
+}
+function renderWorks(){
+ const c=currentClass();if(!document.getElementById('worksBody'))return;
+ worksBody.innerHTML=c.works.map((w,i)=>{
+   const done=Object.keys(w.grades||{}).length;
+   return `<tr><td>${esc(w.title)}</td><td>${esc(w.type)}</td><td>${esc(w.date)}</td><td>${w.max}</td><td>${done}/${c.students.length}</td><td><div class="actions"><button class="btn" onclick="openGrading(${i})">رصد</button><button class="btn bad" onclick="deleteWork(${i})">حذف</button></div></td></tr>`;
+ }).join('')||'<tr><td colspan="6">لا توجد واجبات أو مهام مسجلة.</td></tr>';
+ const total=c.works.length,fully=c.works.filter(w=>Object.keys(w.grades||{}).length===c.students.length&&c.students.length).length;
+ workStats.innerHTML=`<div class="kpi-list"><div class="kpi">المسجلة<b style="display:block">${total}</b></div><div class="kpi">مكتملة الرصد<b style="display:block">${fully}</b></div><div class="kpi">بانتظار الرصد<b style="display:block">${total-fully}</b></div></div>`;
+ if(!workDate.value)workDate.value=new Date().toISOString().slice(0,10);
+}
+
+function saveContact(){
+ const c=currentClass();if(!c.students.length)return alert('أضف طالبًا أولًا');
+ c.contacts.push({
+   studentIndex:+contactStudent.value,
+   type:contactType.value,
+   date:contactDate.value||new Date().toISOString().slice(0,10),
+   result:contactResult.value,
+   note:contactNote.value.trim()
+ });
+ contactNote.value='';save();renderAll();
+}
+function deleteContact(i){if(confirm('حذف سجل التواصل؟')){currentClass().contacts.splice(i,1);renderAll()}}
+function renderContacts(){
+ const c=currentClass();if(!document.getElementById('contactsBody'))return;
+ contactsBody.innerHTML=[...c.contacts].reverse().map(x=>{
+   const i=c.contacts.indexOf(x),st=c.students[x.studentIndex];
+   return `<tr><td>${esc(x.date)}</td><td>${esc(st?st.name:'طالب محذوف')}</td><td>${esc(x.type)}</td><td>${esc(x.result)}</td><td>${esc(x.note||'')}</td><td><button class="btn bad" onclick="deleteContact(${i})">حذف</button></td></tr>`;
+ }).join('')||'<tr><td colspan="6">لا توجد عمليات تواصل مسجلة.</td></tr>';
+ const total=c.contacts.length,pending=c.contacts.filter(x=>x.result==='تحتاج متابعة لاحقة'||x.result==='لم يتم الرد').length,done=c.contacts.filter(x=>x.result==='تم حل الملاحظة').length;
+ contactStats.innerHTML=`<div class="kpi-list"><div class="kpi">إجمالي التواصل<b style="display:block">${total}</b></div><div class="kpi">تحتاج متابعة<b style="display:block">${pending}</b></div><div class="kpi">تم حلها<b style="display:block">${done}</b></div></div>`;
+}
+
+function saveLesson(){
+ const c=currentClass();if(!c.students.length)return alert('أضف طالبًا أولًا');
+ c.lessons.push({studentIndex:+lessonStudent.value,date:lessonDate.value||new Date().toISOString().slice(0,10),item:lessonItem.value,points:+lessonPoints.value,note:lessonNote.value.trim()});
+ lessonNote.value='';save();renderAll();
+}
+function deleteLesson(i){if(confirm('حذف سجل المتابعة؟')){currentClass().lessons.splice(i,1);renderAll()}}
+function renderLessons(){
+ const c=currentClass();if(!document.getElementById('lessonBody'))return;
+ lessonBody.innerHTML=[...c.lessons].reverse().map(x=>{
+  const i=c.lessons.indexOf(x),st=c.students[x.studentIndex];
+  return `<tr><td>${esc(x.date)}</td><td>${esc(st?st.name:'طالب محذوف')}</td><td>${esc(x.item)}</td><td>${x.points}</td><td>${esc(x.note||'')}</td><td><button class="btn bad" onclick="deleteLesson(${i})">حذف</button></td></tr>`
+ }).join('')||'<tr><td colspan="6">لا توجد متابعات للحصة بعد.</td></tr>';
+ const sums=c.students.map((st,i)=>({name:st.name,points:c.lessons.filter(x=>x.studentIndex===i).reduce((q,x)=>q+(+x.points||0),0)})).sort((a,b)=>b.points-a.points).slice(0,5);
+ lessonLeaders.innerHTML=sums.length?sums.map((x,i)=>`<div class="chartrow"><span>${i+1}. ${esc(x.name)}</span><div class="bar"><i style="width:${Math.min(100,x.points*5)}%"></i></div><b>${x.points}</b></div>`).join(''):'<p class="muted">تظهر هنا أعلى المشاركات بعد تسجيلها.</p>';
+}
+
+function saveWeeklyPlan(){
+ const c=currentClass();if(!c.students.length)return alert('أضف طالبًا أولًا');
+ c.weeklyPlans.push({
+   week:planWeek.value||'',
+   studentIndex:+planStudent.value,
+   goal:planGoal.value,
+   status:planStatus.value,
+   action:planAction.value.trim()
+ });
+ planAction.value='';save();renderAll();
+}
+function deleteWeeklyPlan(i){if(confirm('حذف خطة المتابعة؟')){currentClass().weeklyPlans.splice(i,1);renderAll()}}
+function renderWeeklyPlans(){
+ const c=currentClass();if(!document.getElementById('planBody'))return;
+ planBody.innerHTML=[...c.weeklyPlans].reverse().map(x=>{
+   const i=c.weeklyPlans.indexOf(x),st=c.students[x.studentIndex];
+   return `<tr><td>${esc(x.week||'')}</td><td>${esc(st?st.name:'طالب محذوف')}</td><td>${esc(x.goal)}</td><td>${esc(x.status)}</td><td>${esc(x.action||'')}</td><td><button class="btn bad" onclick="deleteWeeklyPlan(${i})">حذف</button></td></tr>`;
+ }).join('')||'<tr><td colspan="6">لا توجد خطط أسبوعية مسجلة.</td></tr>';
+ const all=c.weeklyPlans.length,done=c.weeklyPlans.filter(x=>x.status==='مكتملة').length,progress=c.weeklyPlans.filter(x=>x.status==='قيد التنفيذ'||x.status==='تحسن ملحوظ').length;
+ planStats.innerHTML=`<div class="kpi-list"><div class="kpi">الإجمالي<b style="display:block">${all}</b></div><div class="kpi">قيد التنفيذ<b style="display:block">${progress}</b></div><div class="kpi">مكتملة<b style="display:block">${done}</b></div></div>`;
+ if(document.getElementById('planWeek')&&!planWeek.value){
+   const d=new Date();const first=new Date(d.getFullYear(),0,1);const week=Math.ceil((((d-first)/86400000)+first.getDay()+1)/7);planWeek.value=`${d.getFullYear()}-W${String(week).padStart(2,'0')}`;
+ }
+}
+
+function renderRanking(){
+ const c=currentClass();if(!document.getElementById('rankingBody'))return;
+ const rows=c.students.map((st,i)=>{
+   const avg=studentAvg(st);
+   const pts=c.lessons.filter(x=>x.studentIndex===i).reduce((q,x)=>q+(+x.points||0),0);
+   const abs=c.attendance.filter(x=>x.studentIndex===i&&['absent','excused'].includes(x.status)).length;
+   const plans=c.weeklyPlans.filter(x=>x.studentIndex===i&&x.status!=='مكتملة').length;
+   return {st,i,avg,pts,abs,plans};
+ }).sort((a,b)=>b.avg-a.avg||b.pts-a.pts||a.abs-b.abs);
+
+ rankingBody.innerHTML=rows.map((x,idx)=>`<tr>
+   <td>${idx+1}</td><td>${esc(x.st.name)}</td><td>${x.avg}%</td>
+   <td><span class="badge ${levelBadge(x.avg)}">${levelName(x.avg)}</span></td>
+   <td>${x.pts}</td><td>${x.abs}</td><td>${x.plans}</td>
+ </tr>`).join('')||'<tr><td colspan="7">لا يوجد طلاب.</td></tr>';
+
+ rankingList.innerHTML=rows.slice(0,10).map((x,idx)=>{
+   const medal=idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':'⭐';
+   return `<div class="chartrow"><span>${medal} ${idx+1}. ${esc(x.st.name)}</span><div class="bar"><i style="width:${x.avg}%"></i></div><b>${x.avg}%</b></div>`;
+ }).join('')||'<p class="muted">يظهر الترتيب بعد إضافة الطلاب والدرجات.</p>';
+
+ const top=rows.filter(x=>x.avg>=90);
+ const improved=rows.filter(x=>x.avg>=75&&x.avg<90&&x.pts>=5);
+ honorBoard.innerHTML=
+   (top.length?`<div class="notice"><b>🏆 المتفوقون:</b><br>${top.map(x=>esc(x.st.name)+' — '+x.avg+'%').join('<br>')}</div>`:'')+
+   (improved.length?`<div class="notice" style="margin-top:8px"><b>🌟 نشاط ومشاركة مميزة:</b><br>${improved.map(x=>esc(x.st.name)+' — '+x.pts+' نقطة').join('<br>')}</div>`:'')+
+   (!top.length&&!improved.length?'<p class="muted">تظهر هنا أسماء الطلاب المتميزين عند توفر البيانات.</p>':'');
+}
+
+function ensureWeights(){
+ if(!data.settings.weights)data.settings.weights={part:20,home:20,task:25,exam:35};
+ return data.settings.weights;
+}
+function weightedFinal(st){
+ const w=ensureWeights(),sum=(+w.part||0)+(+w.home||0)+(+w.task||0)+(+w.exam||0);
+ if(sum<=0)return 0;
+ return Math.round((((+st.part||0)*(+w.part||0))+((+st.home||0)*(+w.home||0))+((+st.task||0)*(+w.task||0))+((+st.exam||0)*(+w.exam||0)))/sum);
+}
+function finalGradeName(v){
+ return v>=90?'ممتاز':v>=80?'جيد جدًا':v>=70?'جيد':v>=60?'مقبول':'يحتاج تحسين';
+}
+function saveWeights(){
+ const vals=[+wPart.value||0,+wHome.value||0,+wTask.value||0,+wExam.value||0],sum=vals.reduce((a,b)=>a+b,0);
+ if(sum!==100&&!confirm('مجموع الأوزان '+sum+'% وليس 100%. هل تريد الحفظ مع ذلك؟'))return;
+ data.settings.weights={part:vals[0],home:vals[1],task:vals[2],exam:vals[3]};
+ save();renderGradebook();renderAll();
+}
+
+function renderBulkGrades(){
+ if(!document.getElementById('bulkGradeBody'))return;
+ const c=currentClass(),field=bulkGradeField?.value||'part';
+ bulkGradeBody.innerHTML=c.students.map((st,i)=>`<tr><td>${esc(st.name)}</td><td><input class="bulkGradeInput" data-i="${i}" type="number" min="0" max="100" value="${st[field]||0}" style="width:100px"></td></tr>`).join('')||'<tr><td colspan="2">لا يوجد طلاب.</td></tr>';
+}
+function saveBulkGrades(){
+ const c=currentClass(),field=bulkGradeField.value;
+ document.querySelectorAll('.bulkGradeInput').forEach(inp=>{
+   const i=+inp.dataset.i;
+   if(c.students[i])c.students[i][field]=Math.max(0,Math.min(100,+inp.value||0));
+ });
+ save();renderAll();alert('تم حفظ الرصد الجماعي.');
+}
+function renderGradebook(){
+ if(!document.getElementById('finalGradesBody'))return;
+ const c=currentClass(),w=ensureWeights();
+ wPart.value=w.part;wHome.value=w.home;wTask.value=w.task;wExam.value=w.exam;
+ const sum=(+w.part||0)+(+w.home||0)+(+w.task||0)+(+w.exam||0);
+ weightCheck.innerHTML=`مجموع الأوزان الحالي: <b>${sum}%</b>${sum===100?' — صحيح':' — يفضل أن يكون 100%'}`;
+ const rows=c.students.map(st=>({st,v:weightedFinal(st)}));
+ finalGradesBody.innerHTML=rows.map(x=>`<tr>
+   <td>${esc(x.st.name)}</td><td>${x.st.part||0}%</td><td>${x.st.home||0}%</td><td>${x.st.task||0}%</td><td>${x.st.exam||0}%</td>
+   <td><b>${x.v}%</b></td><td>${finalGradeName(x.v)}</td><td><span class="badge ${x.v>=60?'good':'bad'}">${x.v>=60?'محقق':'يحتاج متابعة'}</span></td>
+ </tr>`).join('')||'<tr><td colspan="8">لا يوجد طلاب.</td></tr>';
+ const vals=rows.map(x=>x.v),avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0,pass=vals.filter(v=>v>=60).length,excellent=vals.filter(v=>v>=90).length;
+ finalStats.innerHTML=`<div class="kpi-list"><div class="kpi">متوسط الفصل<b style="display:block">${avg}%</b></div><div class="kpi">محققون<b style="display:block">${pass}</b></div><div class="kpi">ممتاز<b style="display:block">${excellent}</b></div><div class="kpi">يحتاجون دعمًا<b style="display:block">${vals.filter(v=>v<60).length}</b></div></div>`;
+}
+function exportFinalCSV(){
+ const c=currentClass();
+ const rows=[['الطالب','المشاركة','الواجبات','المهام','الاختبارات','المجموع النهائي','التقدير'],
+ ...c.students.map(st=>[st.name,st.part||0,st.home||0,st.task||0,st.exam||0,weightedFinal(st),finalGradeName(weightedFinal(st))])];
+ const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
+ const b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='كشف-الدرجات-النهائي-'+c.name+'.csv';a.click();
+}
+
+function ensureArchives(){
+ if(!data.settings.archives)data.settings.archives=[];
+ return data.settings.archives;
+}
+function archivePeriod(){
+ const c=currentClass(),name=periodName.value.trim();
+ if(!name)return alert('اكتب اسم الفترة');
+ const students=c.students.map(st=>({
+   name:st.name,
+   final:weightedFinal(st),
+   avg:studentAvg(st),
+   level:finalGradeName(weightedFinal(st))
+ }));
+ const avg=students.length?Math.round(students.reduce((q,x)=>q+x.final,0)/students.length):0;
+ ensureArchives().push({
+   id:Date.now(),
+   name,
+   date:periodDate.value||new Date().toISOString().slice(0,10),
+   classId:c.id,
+   className:c.name,
+   count:students.length,
+   avg,
+   students
+ });
+ periodName.value='';save();renderPeriods();alert('تم حفظ لقطة الفترة');
+}
+function deletePeriod(id){
+ if(confirm('حذف هذه الفترة المؤرشفة؟')){
+   data.settings.archives=ensureArchives().filter(x=>x.id!==id);
+   save();renderPeriods();
+ }
+}
+function renderPeriods(){
+ if(!document.getElementById('periodBody'))return;
+ const arr=ensureArchives();
+ if(!periodDate.value)periodDate.value=new Date().toISOString().slice(0,10);
+ periodBody.innerHTML=[...arr].reverse().map(x=>`<tr>
+   <td>${esc(x.name)}</td><td>${esc(x.date)}</td><td>${esc(x.className)}</td>
+   <td>${x.count}</td><td>${x.avg}%</td>
+   <td><button class="btn bad" onclick="deletePeriod(${x.id})">حذف</button></td>
+ </tr>`).join('')||'<tr><td colspan="6">لا توجد فترات مؤرشفة بعد.</td></tr>';
+ const c=currentClass(),mine=arr.filter(x=>x.classId===c.id).slice(-6);
+ periodCompare.innerHTML=mine.length?mine.map(x=>`<div class="chartrow"><span>${esc(x.name)}</span><div class="bar"><i style="width:${x.avg}%"></i></div><b>${x.avg}%</b></div>`).join(''):'<p class="muted">احفظ أكثر من فترة لتظهر المقارنة هنا.</p>';
+}
+
+function savePortfolio(){
+ const c=currentClass();if(!c.students.length)return alert('أضف طالبًا أولًا');
+ if(!portfolioTitle.value.trim())return alert('اكتب عنوان الإنجاز');
+ c.portfolio.push({studentIndex:+portfolioStudent.value,date:portfolioDate.value||new Date().toISOString().slice(0,10),type:portfolioType.value,title:portfolioTitle.value.trim(),note:portfolioNote.value.trim()});
+ portfolioTitle.value='';portfolioNote.value='';save();renderAll();
+}
+function deletePortfolio(i){if(confirm('حذف هذا الإنجاز؟')){currentClass().portfolio.splice(i,1);save();renderAll()}}
+function renderPortfolio(){
+ if(!document.getElementById('portfolioBody'))return;
+ const c=currentClass(),arr=c.portfolio||[];
+ portfolioBody.innerHTML=[...arr].reverse().map(x=>{
+   const i=arr.indexOf(x),st=c.students[x.studentIndex];
+   return `<tr><td>${esc(x.date)}</td><td>${esc(st?st.name:'طالب محذوف')}</td><td>${esc(x.type)}</td><td>${esc(x.title)}</td><td>${esc(x.note||'')}</td><td><button class="btn bad" onclick="deletePortfolio(${i})">حذف</button></td></tr>`;
+ }).join('')||'<tr><td colspan="6">لا توجد إنجازات مسجلة.</td></tr>';
+ const active=new Set(arr.map(x=>x.studentIndex)).size;
+ const top=c.students.map((st,i)=>({name:st.name,n:arr.filter(x=>x.studentIndex===i).length})).sort((a,b)=>b.n-a.n)[0];
+ portfolioStats.innerHTML=`<div class="kpi-list"><div class="kpi">إجمالي الإنجازات<b style="display:block">${arr.length}</b></div><div class="kpi">طلاب لديهم إنجازات<b style="display:block">${active}</b></div><div class="kpi">الأكثر إنجازًا<b style="display:block">${top&&top.n?esc(top.name):'—'}</b></div></div>`;
+}
+
+function saveLessonPlan(){
+ const c=currentClass();
+ if(!lessonPlanTitle.value.trim())return alert('اكتب عنوان الدرس');
+ c.curriculum.push({
+   date:lessonPlanDate.value||new Date().toISOString().slice(0,10),
+   unit:lessonPlanUnit.value.trim(),title:lessonPlanTitle.value.trim(),
+   objectives:lessonPlanObjectives.value.trim(),strategy:lessonPlanStrategy.value.trim(),
+   activity:lessonPlanActivity.value.trim(),homework:lessonPlanHomework.value.trim(),
+   status:lessonPlanStatus.value
+ });
+ lessonPlanTitle.value='';lessonPlanObjectives.value='';lessonPlanStrategy.value='';lessonPlanActivity.value='';lessonPlanHomework.value='';
+ save();renderAll();
+}
+function deleteLessonPlan(i){if(confirm('حذف تحضير الدرس؟')){currentClass().curriculum.splice(i,1);save();renderAll()}}
+function renderCurriculum(){
+ if(!document.getElementById('curriculumBody'))return;
+ const c=currentClass(),arr=c.curriculum||[];
+ if(!lessonPlanDate.value)lessonPlanDate.value=new Date().toISOString().slice(0,10);
+ curriculumBody.innerHTML=[...arr].reverse().map(x=>{
+   const i=arr.indexOf(x);
+   return `<tr><td>${esc(x.date)}</td><td>${esc(x.unit||'')}</td><td>${esc(x.title)}</td><td>${esc(x.status)}</td><td>${esc(x.homework||'')}</td><td><button class="btn bad" onclick="deleteLessonPlan(${i})">حذف</button></td></tr>`;
+ }).join('')||'<tr><td colspan="6">لا توجد تحضيرات مسجلة.</td></tr>';
+ const done=arr.filter(x=>x.status==='تم التنفيذ').length,more=arr.filter(x=>x.status==='يحتاج استكمال').length,planned=arr.filter(x=>x.status==='مخطط').length;
+ const rate=arr.length?Math.round(done/arr.length*100):0;
+ curriculumStats.innerHTML=`<div class="kpi-list"><div class="kpi">الدروس المسجلة<b style="display:block">${arr.length}</b></div><div class="kpi">تم التنفيذ<b style="display:block">${done}</b></div><div class="kpi">مخطط<b style="display:block">${planned}</b></div><div class="kpi">نسبة الإنجاز<b style="display:block">${rate}%</b></div></div>${more?`<div class="notice" style="margin-top:10px">يوجد <b>${more}</b> درس يحتاج استكمالًا.</div>`:''}`;
+}
+
+function parentReportData(i){
+ const c=currentClass(),st=c.students[i]; if(!st)return null;
+ const final=weightedFinal(st),avg=studentAvg(st);
+ const att=c.attendance.filter(x=>x.studentIndex===i);
+ const present=att.filter(x=>x.status==='present').length;
+ const absent=att.filter(x=>x.status==='absent').length;
+ const excused=att.filter(x=>x.status==='excused').length;
+ const late=att.filter(x=>x.status==='late').length;
+ const attendanceRate=att.length?Math.round((present/att.length)*100):0;
+ const pts=c.lessons.filter(x=>x.studentIndex===i).reduce((q,x)=>q+(+x.points||0),0);
+ const skills=(c.skills||[]).filter(x=>x.studentIndex===i);
+ const skillAvg=skills.length?Math.round(skills.reduce((q,x)=>q+x.score,0)/skills.length):null;
+ const behavior=(c.behavior||[]).filter(x=>x.studentIndex===i);
+ const positive=behavior.filter(x=>x.level==='إيجابي'||x.level==='إيجابية').length;
+ const follow=behavior.filter(x=>x.level==='يحتاج متابعة').length;
+ const plans=(c.weeklyPlans||[]).filter(x=>x.studentIndex===i&&x.status!=='مكتملة').length;
+ const achievements=(c.portfolio||[]).filter(x=>x.studentIndex===i).length;
+ return {st,final,avg,present,absent,excused,late,attendanceRate,pts,skillAvg,positive,follow,plans,achievements};
+}
+function parentAdvice(d,tone){
+ if(tone==='encourage'){
+   if(d.final>=90)return 'نوصي بالاستمرار في التحفيز وتقديم أنشطة إثرائية تناسب مستوى الطالب المتقدم.';
+   if(d.final>=75)return 'يظهر الطالب تقدمًا جيدًا، ويستفيد من استمرار التشجيع والمتابعة المنزلية المنتظمة.';
+   return 'يمتلك الطالب فرصًا واضحة للتحسن، ويُنصح بتعزيز الجوانب الإيجابية مع تدريب قصير ومنتظم على المهارات الأساسية.';
+ }
+ if(tone==='followup'){
+   if(d.absent>=3)return 'الأولوية خلال الفترة القادمة هي تحسين انتظام الحضور ومتابعة أثر الغياب في التحصيل.';
+   if(d.final<60)return 'الأولوية هي تنفيذ خطة علاجية مركزة ومتابعة التقدم أسبوعيًا في المهارات الأكثر احتياجًا.';
+   if(d.plans>0)return 'يوصى بالاستمرار في خطة المتابعة الحالية وتقييم أثرها في نهاية الأسبوع.';
+   return 'يوصى بمتابعة الواجبات والمشاركة الصفية بصورة منتظمة لضمان استمرار التقدم.';
+ }
+ return smartStudentSummary(currentClass().students.indexOf(d.st));
+}
+function renderParentReport(){
+ if(!document.getElementById('parentReportContent'))return;
+ const c=currentClass();
+ if(!c.students.length){
+   parentReportContent.innerHTML='<p class="muted">لا يوجد طلاب.</p>';
+   parentReportKpis.innerHTML='';
+   attendanceMonthSummary.innerHTML='';
+   return;
+ }
+ let i=+(parentReportStudent?.value||0); if(!c.students[i])i=0;
+ const d=parentReportData(i),tone=parentReportTone?.value||'balanced';
+ parentReportMeta.textContent=`${data.settings.school} — ${c.name} — ${data.settings.teacher}`;
+ parentReportKpis.innerHTML=`<div class="kpi-list">
+   <div class="kpi">النتيجة النهائية<b style="display:block">${d.final}%</b></div>
+   <div class="kpi">نسبة الحضور<b style="display:block">${d.attendanceRate}%</b></div>
+   <div class="kpi">نقاط المشاركة<b style="display:block">${d.pts}</b></div>
+   <div class="kpi">الإنجازات<b style="display:block">${d.achievements}</b></div>
+ </div>`;
+ parentReportContent.innerHTML=`
+   <h3>${esc(d.st.name)}</h3>
+   <p><b>المستوى العام:</b> ${d.final}% — ${finalGradeName(d.final)}</p>
+   <p><b>الأداء الأكاديمي:</b> مشاركة ${d.st.part||0}%، واجبات ${d.st.home||0}%، مهام ${d.st.task||0}%، اختبارات ${d.st.exam||0}%.</p>
+   <p><b>الحضور:</b> حاضر ${d.present}، غائب ${d.absent}، بعذر ${d.excused}، متأخر ${d.late}.</p>
+   <p><b>المهارات اللغوية:</b> ${d.skillAvg===null?'لم تُسجّل تقييمات مهارية بعد.':'متوسط المهارات '+d.skillAvg+'%.'}</p>
+   <p><b>السلوك والمتابعة:</b> ملاحظات إيجابية ${d.positive}، حالات تحتاج متابعة ${d.follow}، خطط نشطة ${d.plans}.</p>
+   <div class="notice"><b>التوصية:</b> ${parentAdvice(d,tone)}</div>`;
+ const ym=new Date().toISOString().slice(0,7);
+ const ma=c.attendance.filter(x=>x.studentIndex===i&&x.date?.startsWith(ym));
+ const mp=ma.filter(x=>x.status==='present').length,ma1=ma.filter(x=>x.status==='absent').length,me=ma.filter(x=>x.status==='excused').length,ml=ma.filter(x=>x.status==='late').length;
+ attendanceMonthSummary.innerHTML=`<div class="kpi-list">
+   <div class="kpi">حاضر<b style="display:block">${mp}</b></div>
+   <div class="kpi">غائب<b style="display:block">${ma1}</b></div>
+   <div class="kpi">بعذر<b style="display:block">${me}</b></div>
+   <div class="kpi">متأخر<b style="display:block">${ml}</b></div>
+ </div>`;
+}
+function parentReportPlainText(){
+ const c=currentClass(); if(!c.students.length)return '';
+ let i=+(parentReportStudent?.value||0); if(!c.students[i])i=0;
+ const d=parentReportData(i),tone=parentReportTone?.value||'balanced';
+ return `تقرير متابعة الطالب: ${d.st.name}
+المدرسة: ${data.settings.school}
+الفصل: ${c.name}
+المعلم: ${data.settings.teacher}
+
+المستوى العام: ${d.final}% — ${finalGradeName(d.final)}
+المشاركة: ${d.st.part||0}%
+الواجبات: ${d.st.home||0}%
+المهام: ${d.st.task||0}%
+الاختبارات: ${d.st.exam||0}%
+نسبة الحضور: ${d.attendanceRate}%
+الغياب: ${d.absent}
+التأخر: ${d.late}
+نقاط المشاركة الصفية: ${d.pts}
+الإنجازات المسجلة: ${d.achievements}
+
+التوصية: ${parentAdvice(d,tone)}${parentExtraNote?.value.trim()?`\nملاحظة المعلم: ${parentExtraNote.value.trim()}`:''}`;
+}
+function copyParentReport(){
+ const txt=parentReportPlainText(); if(!txt)return alert('لا يوجد تقرير لنسخه');
+ navigator.clipboard?.writeText(txt).then(()=>alert('تم نسخ تقرير ولي الأمر')).catch(()=>prompt('انسخ التقرير:',txt));
+}
+
+function renderExecutive(){
+ if(!document.getElementById('executiveKpis'))return;
+ const c=currentClass(),students=c.students||[];
+ const finals=students.map(weightedFinal);
+ const avg=finals.length?Math.round(finals.reduce((a,b)=>a+b,0)/finals.length):0;
+ const excellent=students.map((st,i)=>({st,i,v:weightedFinal(st)})).filter(x=>x.v>=90);
+ const good=finals.filter(v=>v>=75&&v<90).length;
+ const mid=finals.filter(v=>v>=60&&v<75).length;
+ const low=students.map((st,i)=>({st,i,v:weightedFinal(st)})).filter(x=>x.v<60);
+ const abs=c.attendance.filter(x=>x.status==='absent').length;
+ const late=c.attendance.filter(x=>x.status==='late').length;
+ const activePlans=(c.weeklyPlans||[]).filter(x=>x.status!=='مكتملة').length;
+ const achievements=(c.portfolio||[]).length;
+ executiveHeader.innerHTML=`<p><b>المدرسة:</b> ${esc(data.settings.school)} &nbsp; | &nbsp; <b>الفصل:</b> ${esc(c.name)} &nbsp; | &nbsp; <b>المعلم:</b> ${esc(data.settings.teacher)} &nbsp; | &nbsp; <b>الفترة:</b> ${esc(data.settings.semester||'')}</p>`;
+ executiveKpis.innerHTML=`<div class="kpi-list">
+  <div class="kpi">عدد الطلاب<b style="display:block">${students.length}</b></div>
+  <div class="kpi">متوسط الفصل<b style="display:block">${avg}%</b></div>
+  <div class="kpi">المتفوقون<b style="display:block">${excellent.length}</b></div>
+  <div class="kpi">يحتاجون دعمًا<b style="display:block">${low.length}</b></div>
+  <div class="kpi">الغياب المسجل<b style="display:block">${abs}</b></div>
+  <div class="kpi">التأخر<b style="display:block">${late}</b></div>
+  <div class="kpi">خطط نشطة<b style="display:block">${activePlans}</b></div>
+  <div class="kpi">الإنجازات<b style="display:block">${achievements}</b></div>
+ </div>`;
+ executiveLevels.innerHTML=[
+   ['متفوق 90–100',excellent.length,100],
+   ['جيد جدًا 75–89',good,students.length?Math.round(good/students.length*100):0],
+   ['مقبول 60–74',mid,students.length?Math.round(mid/students.length*100):0],
+   ['يحتاج دعمًا أقل من 60',low.length,students.length?Math.round(low.length/students.length*100):0]
+ ].map(x=>`<div class="chartrow"><span>${x[0]}</span><div class="bar"><i style="width:${x[2]}%"></i></div><b>${x[1]}</b></div>`).join('');
+
+ const names=['النحو','الإملاء','القراءة','الكتابة','الإلقاء','الفهم اللغوي'];
+ const skills=names.map(n=>{const a=c.skills.filter(x=>x.name===n);return {n,v:a.length?Math.round(a.reduce((q,x)=>q+x.score,0)/a.length):null}}).filter(x=>x.v!==null);
+ executiveSkills.innerHTML=skills.length?skills.map(x=>`<div class="chartrow"><span>${x.n}</span><div class="bar"><i style="width:${x.v}%"></i></div><b>${x.v}%</b></div>`).join(''):'<p class="muted">لا توجد تقييمات مهارية كافية.</p>';
+
+ const priority=students.map((st,i)=>{
+   const v=weightedFinal(st),a=c.attendance.filter(x=>x.studentIndex===i&&x.status==='absent').length;
+   return {name:st.name,v,a,score:(v<60?2:0)+(a>=2?1:0)};
+ }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.v-b.v);
+ executivePriority.innerHTML=priority.length?priority.slice(0,10).map(x=>`<p>⚠️ <b>${esc(x.name)}</b> — التحصيل ${x.v}% — الغياب ${x.a}</p>`).join(''):'<p class="muted">لا توجد حالات ذات أولوية مرتفعة حاليًا.</p>';
+ executiveExcellent.innerHTML=excellent.length?excellent.map(x=>`<p>🏆 <b>${esc(x.st.name)}</b> — ${x.v}%</p>`).join(''):'<p class="muted">تظهر هنا أسماء الطلاب عند بلوغ 90% فأعلى.</p>';
+
+ const weakest=skills.length?[...skills].sort((a,b)=>a.v-b.v)[0]:null;
+ const rec=[];
+ if(low.length)rec.push(`تنفيذ متابعة علاجية مركزة لـ ${low.length} طالبًا ممن تقل نتائجهم عن 60%.`);
+ if(weakest)rec.push(`تكثيف التطبيقات في مهارة ${weakest.n}؛ فهي الأقل بمتوسط ${weakest.v}%.`);
+ if(abs)rec.push('الاستمرار في متابعة الغياب وربطه بخطط التحسين الأكاديمي عند الحاجة.');
+ if(excellent.length)rec.push(`تقديم مهام إثرائية للطلاب المتفوقين وعددهم ${excellent.length}.`);
+ if(!rec.length)rec.push('الاستمرار في الممارسات الحالية مع قياس دوري للتقدم.');
+ executiveRecommendations.innerHTML='<ol>'+rec.map(x=>`<li>${x}</li>`).join('')+'</ol>';
+}
+
+function totalRecords(){
+ let n=0;
+ (data.classes||[]).forEach(c=>{
+   n+=(c.students||[]).length+(c.attendance||[]).length+(c.skills||[]).length+
+      (c.behavior||[]).length+(c.works||[]).length+(c.contacts||[]).length+
+      (c.lessons||[]).length+(c.weeklyPlans||[]).length+(c.portfolio||[]).length+
+      (c.curriculum||[]).length+(c.rubrics||[]).length;
+ });
+ return n;
+}
+function renderSystemHealth(){
+ if(!document.getElementById('systemHealth'))return;
+ const classes=(data.classes||[]).length,students=(data.classes||[]).reduce((q,c)=>q+(c.students||[]).length,0),records=totalRecords();
+ const last=localStorage.getItem('quraish_last_backup');
+ systemHealth.innerHTML=`<div class="kpi-list">
+  <div class="kpi">الفصول<b style="display:block">${classes}</b></div>
+  <div class="kpi">الطلاب<b style="display:block">${students}</b></div>
+  <div class="kpi">إجمالي السجلات<b style="display:block">${records}</b></div>
+  <div class="kpi">حالة التخزين<b style="display:block">سليم ✓</b></div>
+ </div>`;
+ lastBackupInfo.textContent=last?'آخر نسخة احتياطية: '+last:'لم يتم تسجيل نسخة احتياطية من هذا الإصدار بعد.';
+ const checks=[
+  ['وجود فصل دراسي واحد على الأقل',classes>0],
+  ['وجود طلاب في السجل',students>0],
+  ['إعداد اسم المدرسة',!!data.settings.school],
+  ['إعداد اسم المعلم',!!data.settings.teacher],
+  ['إمكانية التخزين المحلي',(()=>{try{localStorage.setItem('_qr_test','1');localStorage.removeItem('_qr_test');return true}catch(e){return false}})()]
+ ];
+ readinessChecklist.innerHTML=checks.map(x=>`<p>${x[1]?'✅':'⚠️'} ${x[0]}</p>`).join('');
+}
+
+function restoreSafetySnapshot(){
+ const raw=localStorage.getItem(STORAGE_KEY+'_safety');
+ if(!raw)return alert('لا توجد نسخة أمان تلقائية متاحة.');
+ if(!confirm('هل تريد استعادة آخر حالة محفوظة قبل آخر تعديل؟'))return;
+ try{data=JSON.parse(raw);localStorage.setItem(STORAGE_KEY,raw);renderAll();alert('تمت استعادة نسخة الأمان.');}
+ catch(e){alert('تعذر استعادة نسخة الأمان.');}
+}
+function exportBackupFinal(){
+ try{
+   const payload={app:'Quraish Student Record',version:20,exportedAt:new Date().toISOString(),data};
+   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+   a.download='quraish-record-backup-'+new Date().toISOString().slice(0,10)+'.json';
+   a.click();URL.revokeObjectURL(a.href);
+   const now=new Date().toLocaleString('ar-SA');localStorage.setItem('quraish_last_backup',now);
+   renderSystemHealth();alert('تم إنشاء النسخة الاحتياطية بنجاح.');
+ }catch(e){alert('تعذر إنشاء النسخة الاحتياطية على هذا المتصفح.');}
+}
+function restoreBackupFinal(){
+ const f=finalBackupFile.files?.[0];if(!f)return alert('اختر ملف النسخة الاحتياطية أولًا.');
+ const r=new FileReader();
+ r.onload=()=>{
+  try{
+   const parsed=JSON.parse(r.result);
+   const incoming=parsed.data||parsed;
+   if(!incoming||!Array.isArray(incoming.classes)||!incoming.settings)throw new Error('invalid');
+   if(!confirm(`تم التحقق من الملف.\nالفصول: ${incoming.classes.length}\nهل تريد استبدال البيانات الحالية بهذه النسخة؟`))return;
+   data=incoming;save();renderAll();alert('تمت استعادة النسخة الاحتياطية بنجاح.');
+  }catch(e){alert('الملف غير صالح أو ليس نسخة احتياطية للسجل. لم يتم تغيير البيانات الحالية.');}
+ };
+ r.readAsText(f);
+}
+function renderProfile(){
+ const c=currentClass();if(!c.students.length){profileContent.innerHTML='<p class="muted">لا يوجد طلاب في هذا الفصل.</p>';return}
+ const i=+profileStudent.value||0,s=c.students[i],a=studentAvg(s);
+ const rec=c.attendance.filter(x=>x.studentIndex===i),abs=rec.filter(x=>['absent','excused'].includes(x.status)).length,late=rec.filter(x=>x.status==='late').length;
+ const sr=c.skills.filter(x=>x.studentIndex===i), skillAvg=sr.length?Math.round(sr.reduce((q,x)=>q+x.score,0)/sr.length):null;
+ const br=c.behavior.filter(x=>x.studentIndex===i),posB=br.filter(x=>x.kind==='positive').length,needB=br.filter(x=>x.kind==='needs').length;
+ const wg=c.works.map(w=>({w,v:w.grades?.[i]})).filter(x=>x.v!==undefined), workAvg=wg.length?Math.round(wg.reduce((q,x)=>q+(+x.v/x.w.max*100),0)/wg.length):null;
+ const cr=c.contacts.filter(x=>x.studentIndex===i), pendingC=cr.filter(x=>x.result==='تحتاج متابعة لاحقة'||x.result==='لم يتم الرد').length;
+ const lr=c.lessons.filter(x=>x.studentIndex===i), lessonPts=lr.reduce((q,x)=>q+(+x.points||0),0);
+ const wp=c.weeklyPlans.filter(x=>x.studentIndex===i), activeWp=wp.filter(x=>x.status!=='مكتملة').length;
+ const finalWeighted=weightedFinal(s);
+ const pf=(c.portfolio||[]).filter(x=>x.studentIndex===i);
+ const rb=(c.rubrics||[]).filter(x=>x.studentIndex===i),rbAvg=rb.length?Math.round(rb.reduce((q,x)=>q+x.score,0)/rb.length):null;
+ const hist=ensureArchives().filter(a=>a.classId===c.id).map(a=>a.students.find(x=>x.name===s.name)).filter(Boolean);
+ const progressText=hist.length>=2?(hist.at(-1).final-hist.at(-2).final):null;
+ const skillHtml=sr.length?sr.slice(-8).reverse().map(x=>`<div class="chartrow"><span>${esc(x.name)}</span><div class="bar"><i style="width:${x.score}%"></i></div><b>${x.score}%</b></div>`).join(''):'<p class="muted">لا توجد تقييمات مهارية بعد.</p>';
+ profileContent.innerHTML=`<div class="profile-head"><div><h2>${esc(s.name)}</h2><span class="badge ${levelBadge(a)}">${levelName(a)} — ${a}%</span></div><button class="btn no-print" onclick="window.print()">طباعة ملف الطالب</button></div>
+ <div class="cards"><div class="card"><span>المشاركة</span><b>${s.part||0}%</b></div><div class="card"><span>الواجبات</span><b>${s.home||0}%</b></div><div class="card"><span>المهام</span><b>${s.task||0}%</b></div><div class="card"><span>الاختبارات</span><b>${s.exam||0}%</b></div></div>
+ <div class="grid2"><div class="panel"><h3>الحضور</h3><p>الغياب: <b>${abs}</b></p><p>التأخر: <b>${late}</b></p></div><div class="panel"><h3>ملاحظات المعلم</h3><p>${esc(s.notes||'لا توجد ملاحظات')}</p></div></div>
+ <div class="panel" style="margin-top:14px"><h3>مؤشرات المهارات اللغوية ${skillAvg===null?'':'— المتوسط '+skillAvg+'%'}</h3>${skillHtml}</div>
+ <div class="panel" style="margin-top:14px"><h3>المتابعة السلوكية</h3><p>ملاحظات إيجابية: <b>${posB}</b> &nbsp; | &nbsp; تحتاج متابعة: <b>${needB}</b></p></div>
+ <div class="panel" style="margin-top:14px"><h3>إنجاز الواجبات والمهام</h3><p>${workAvg===null?'لا توجد درجات مرصودة بعد.':'متوسط الأعمال المرصودة: <b>'+workAvg+'%</b> — عدد الأعمال: '+wg.length}</p></div>
+ <div class="panel" style="margin-top:14px"><h3>التواصل والمتابعة</h3><p>عمليات التواصل المسجلة: <b>${cr.length}</b> | تحتاج متابعة لاحقة: <b>${pendingC}</b></p></div>
+ <div class="panel" style="margin-top:14px"><h3>متابعة الحصة</h3><p>عدد المشاركات المسجلة: <b>${lr.length}</b> | مجموع نقاط المشاركة: <b>${lessonPts}</b></p></div>
+ <div class="panel" style="margin-top:14px"><h3>الخطة الأسبوعية</h3><p>إجمالي الخطط: <b>${wp.length}</b> | خطط نشطة: <b>${activeWp}</b></p></div>
+ <div class="panel" style="margin-top:14px"><h3>النتيجة النهائية الموزونة</h3><p><b>${finalWeighted}%</b> — ${finalGradeName(finalWeighted)}</p><p>${progressText===null?'لا توجد فترتان مؤرشفـتان للمقارنة بعد.':('التغير عن آخر فترة: <b>'+(progressText>0?'+':'')+progressText+' درجة</b>')}</p></div>
+ <div class="panel" style="margin-top:14px"><h3>ملف الإنجاز</h3>${pf.length?pf.slice(-5).reverse().map(x=>`<p>⭐ <b>${esc(x.title)}</b> — ${esc(x.type)} — ${esc(x.date)}</p>`).join(''):'<p class="muted">لا توجد إنجازات مسجلة بعد.</p>'}</div>
+ <div class="panel" style="margin-top:14px"><h3>القراءة والإلقاء</h3><p>${rbAvg===null?'لا يوجد تقييم بعد.':'متوسط مقياس القراءة والإلقاء: <b>'+rbAvg+'%</b> ('+rb.length+' تقييم)'}</p></div>
+ <div class="panel" style="margin-top:14px"><h3>التوصية التعليمية</h3><p>${a<60?'يحتاج إلى خطة علاجية مركزة ومتابعة أسبوعية للمهارات الأساسية.':a>=90?'مرشح للأنشطة الإثرائية والمهام المتقدمة والتعلم بالأقران.':'يستمر في التدريب مع تعزيز المهارات الأقل درجة.'}</p></div>`;
+}
+function renderPlans(){
+ const c=currentClass(),st=c.students,low=st.filter(s=>studentAvg(s)<60),mid=st.filter(s=>studentAvg(s)>=60&&studentAvg(s)<75),high=st.filter(s=>studentAvg(s)>=90);
+ if(document.getElementById('diagnosticNeeds')){
+   const names=['النحو','الإملاء','القراءة','الكتابة','الإلقاء','الفهم اللغوي'];
+   const needs=names.map(n=>{const a=c.skills.filter(x=>x.name===n);return {n,v:a.length?Math.round(a.reduce((q,x)=>q+x.score,0)/a.length):null}}).filter(x=>x.v!==null).sort((a,b)=>a.v-b.v);
+   diagnosticNeeds.innerHTML=needs.length?`<p>أكثر المهارات احتياجًا للتحسين: <b>${needs.slice(0,3).map(x=>x.n+' ('+x.v+'%)').join('، ')}</b></p>`:'<p class="muted">سجل تقييمات مهارية ليظهر التشخيص تلقائيًا.</p>';
+ }
+ remedialPlan.innerHTML=low.length?`<p><b>الفئة المستهدفة:</b> ${low.map(s=>esc(s.name)).join('، ')}</p><ol><li>تحديد المهارات المفقودة لكل طالب.</li><li>تدريبات قصيرة متدرجة مرتين أسبوعيًا.</li><li>مراجعة فردية أو تعلم بالأقران.</li><li>قياس تقدّم أسبوعي وتحديث الدرجة.</li></ol>`:'<p class="muted">لا يوجد طلاب مصنفون حاليًا ضمن فئة المتابعة.</p>';
+ enrichmentPlan.innerHTML=high.length?`<p><b>الفئة المستهدفة:</b> ${high.map(s=>esc(s.name)).join('، ')}</p><ol><li>مهام لغوية متقدمة.</li><li>قراءة تحليلية ونقد نصوص.</li><li>إنتاج كتابي وإلقاء قصير.</li><li>دور قيادي في التعلم بالأقران.</li></ol>`:'<p class="muted">تظهر هنا الخطة الإثرائية عند وجود طلاب متفوقين.</p>';
+}
+function renderPrintSummary(){
+ const c=currentClass(), st=c.students, avg=st.length?Math.round(st.reduce((n,s)=>n+studentAvg(s),0)/st.length):0;
+ const pos=c.behavior.filter(x=>x.kind==='positive').length,need=c.behavior.filter(x=>x.kind==='needs').length;
+ const pendingContacts=c.contacts.filter(x=>x.result==='تحتاج متابعة لاحقة'||x.result==='لم يتم الرد').length;
+ if(document.getElementById('attendanceSummaryBody')){
+   attendanceSummaryBody.innerHTML=c.students.map((st,i)=>{
+     const r=c.attendance.filter(x=>x.studentIndex===i),p=r.filter(x=>x.status==='present').length,a=r.filter(x=>x.status==='absent').length,e=r.filter(x=>x.status==='excused').length,l=r.filter(x=>x.status==='late').length;
+     const rate=r.length?Math.round((p/r.length)*100):0;
+     return `<tr><td>${esc(st.name)}</td><td>${p}</td><td>${a}</td><td>${e}</td><td>${l}</td><td>${rate}%</td></tr>`;
+   }).join('')||'<tr><td colspan="6">لا توجد بيانات حضور.</td></tr>';
+ }
+ printSummary.innerHTML=`<h2>${esc(data.settings.school)}</h2><p>${esc(data.settings.teacher)} – ${esc(data.settings.role)} | ${esc(data.settings.semester||'الفصل الدراسي الأول 1448هـ')}</p><p><b>الفصل:</b> ${esc(c.name)} | <b>عدد الطلاب:</b> ${st.length} | <b>متوسط الأداء:</b> ${avg}%</p><p><b>الملاحظات السلوكية:</b> إيجابية ${pos} | تحتاج متابعة ${need}</p><p><b>التواصل مع أولياء الأمور:</b> ${c.contacts.length} عملية | تحتاج متابعة ${pendingContacts}</p><p><b>خطط المتابعة الأسبوعية:</b> ${c.weeklyPlans.length} | النشطة ${c.weeklyPlans.filter(x=>x.status!=='مكتملة').length}</p><p><b>الفترات المؤرشفة لهذا الفصل:</b> ${ensureArchives().filter(x=>x.classId===c.id).length}</p><p>${esc(data.settings.note||'')}</p>`;
+}
+
+
+function certificateText(){
+ const c=currentClass();if(!c.students.length)return alert('لا يوجد طلاب');
+ const rows=c.students.map((st,i)=>({st,avg:studentAvg(st),pts:c.lessons.filter(x=>x.studentIndex===i).reduce((q,x)=>q+(+x.points||0),0)})).sort((a,b)=>b.avg-a.avg||b.pts-a.pts);
+ const names=rows.map((x,i)=>(i+1)+'- '+x.st.name).join('\n');
+ const pick=prompt('اختر رقم الطالب:\n'+names),x=rows[(+pick)-1];if(!x)return;
+ const msg=`تتقدم ${data.settings.school} بالشكر والتقدير للطالب / ${x.st.name}
+نظير تميزه واجتهاده في مادة اللغة العربية، وتحقيقه مستوى متميزًا في المتابعة الصفية.
+معلم المادة / ${data.settings.teacher}
+${data.settings.semester||''}`;
+ navigator.clipboard?.writeText(msg).then(()=>alert('تم نسخ عبارة الشهادة')).catch(()=>prompt('انسخ العبارة:',msg));
+}
+
+
+function copyStudentOnePage(){
+ const c=currentClass();if(!c.students.length)return alert('لا يوجد طلاب');
+ const i=+(profileStudent?.value||0),st=c.students[i];if(!st)return;
+ const d=parentReportData(i);
+ const txt=`ملخص متابعة الطالب: ${st.name}
+المدرسة: ${data.settings.school}
+الفصل: ${c.name}
+النتيجة النهائية: ${d.final}% — ${finalGradeName(d.final)}
+الحضور: ${d.attendanceRate}% | الغياب: ${d.absent} | التأخر: ${d.late}
+نقاط المشاركة: ${d.pts}
+الإنجازات: ${d.achievements}
+الخطط النشطة: ${d.plans}
+التوصية: ${smartStudentSummary(i)}`;
+ navigator.clipboard?.writeText(txt).then(()=>alert('تم نسخ ملخص الطالب')).catch(()=>prompt('انسخ الملخص:',txt));
+}
+function smartStudentSummary(i){
+ const c=currentClass(),st=c.students[i];if(!st)return '';
+ const v=weightedFinal(st),abs=c.attendance.filter(x=>x.studentIndex===i&&['absent','excused'].includes(x.status)).length;
+ const pts=c.lessons.filter(x=>x.studentIndex===i).reduce((q,x)=>q+(+x.points||0),0);
+ if(v<60)return 'الأولوية: خطة علاجية قصيرة مع قياس أسبوعي للمهارة الأقل مستوى.';
+ if(abs>=3)return 'الأولوية: متابعة انتظام الحضور وربطها بأثر الغياب في التحصيل.';
+ if(v>=90)return 'الأولوية: إثراء الطالب بمهمة متقدمة وتوثيق إنجازه في ملف الإنجاز.';
+ if(pts<3)return 'الأولوية: رفع المشاركة الصفية بأسئلة قصيرة وأنشطة تعاونية.';
+ return 'المستوى مستقر؛ يوصى بالاستمرار في التعزيز والمتابعة الدورية.';
+}
+function studentReportText(){
+ const c=currentClass();if(!c.students.length)return alert('لا يوجد طلاب');
+ const names=c.students.map((x,i)=>(i+1)+'- '+x.name).join('\n');
+ const pick=prompt('اكتب رقم الطالب:\n'+names);const i=(+pick)-1;if(!c.students[i])return;
+ const st=c.students[i],a=studentAvg(st);
+ const abs=c.attendance.filter(x=>x.studentIndex===i&&['absent','excused'].includes(x.status)).length;
+ const pts=c.lessons.filter(x=>x.studentIndex===i).reduce((q,x)=>q+(+x.points||0),0);
+ const text=`تقرير متابعة الطالب: ${st.name}
+المدرسة: ${data.settings.school}
+المعلم: ${data.settings.teacher} – ${data.settings.role}
+الفصل: ${c.name}
+متوسط الأداء العام: ${a}% (${levelName(a)})\nالنتيجة النهائية الموزونة: ${weightedFinal(st)}% (${finalGradeName(weightedFinal(st))})
+المشاركة: ${st.part||0}% | الواجبات: ${st.home||0}% | المهام: ${st.task||0}% | الاختبارات: ${st.exam||0}%
+الغياب المسجل: ${abs}
+نقاط المشاركة الصفية: ${pts}
+التوصية الذكية: ${smartStudentSummary(i)}`;
+ navigator.clipboard?.writeText(text).then(()=>alert('تم نسخ تقرير الطالب إلى الحافظة')).catch(()=>prompt('انسخ التقرير:',text));
+}
+function exportCSV(){
+ const c=currentClass();
+ const rows=[['الطالب','المشاركة','الواجبات','المهام','الاختبارات','المتوسط','المستوى'],...c.students.map(s=>[s.name,s.part,s.home,s.task,s.exam,studentAvg(s),levelName(studentAvg(s))])];
+ const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
+ const b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='تقرير-'+c.name+'.csv';a.click();
+}
+
+function downloadRosterTemplate(){
+ const rows=[['اسم الطالب'],['طالب 1'],['طالب 2'],['طالب 3']];
+ const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
+ const b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
+ a.href=URL.createObjectURL(b);a.download='نموذج-أسماء-الطلاب.csv';a.click();
+}
+function exportBackup(){
+ const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='نسخة-احتياطية-سجل-قريش.json';a.click();
+}
+function importBackup(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.classes)throw 0;data=x;save();renderAll();alert('تمت استعادة النسخة الاحتياطية')}catch{alert('الملف غير صالح')}};r.readAsText(f);
+}
+function saveSettings(){
+ data.settings.school=schoolName.value.trim()||'قريش الثانوية';
+ data.settings.teacher=teacherName.value.trim()||'محمد الثقفي';
+ data.settings.role=teacherRole.value.trim()||'معلم لغة عربية';data.settings.semester=semesterName.value.trim()||'الفصل الدراسي الأول 1448هـ';
+data.settings.note=schoolNote.value.trim();
+ save();alert('تم حفظ الإعدادات');
+}
+function loadSettings(){
+ schoolName.value=data.settings.school||'';teacherName.value=data.settings.teacher||'';teacherRole.value=data.settings.role||'';semesterName.value=data.settings.semester||'الفصل الدراسي الأول 1448هـ';schoolNote.value=data.settings.note||'';
+ if(document.getElementById('dataHealth')){
+   const students=data.classes.reduce((q,c)=>q+c.students.length,0);
+   const records=data.classes.reduce((q,c)=>q+c.attendance.length+c.skills.length+c.behavior.length+c.contacts.length+c.lessons.length+c.weeklyPlans.length+c.works.length+(c.portfolio||[]).length+(c.curriculum||[]).length+(c.rubrics||[]).length,0);
+   dataHealth.innerHTML=`حالة البيانات: <b>${students}</b> طالبًا و <b>${records}</b> سجل متابعة محفوظ محليًا على هذا الجهاز.`;
+ }
+}
+loadSettings();renderAll();
+</script>
+</body>
+</html>
